@@ -1,0 +1,4 @@
+{
+    "java.format.settings.url": "eclipse-formatter.xml",
+    // this tells java to look for source files in this directory too, not just only in 'src'!
+}

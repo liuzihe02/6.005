@@ -4,18 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
+        {
+            "type": "java",
+            "name": "RulesOf6005",
+            "request": "launch",
+            "mainClass": "rules.RulesOf6005",
+            "projectName": "6.005_54d7c0a8"
+        },
         {
             "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
         },
-        {
-            "type": "java",
-            "name": "JavaTest",
-            "request": "launch",
-            "mainClass": "JavaTest",
-            "projectName": "6.005_54d7c0a8"
-        }
     ]
 }

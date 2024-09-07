@@ -243,6 +243,15 @@ public static Map<String, Set<URL>> makeIndex(Set<URL> urls) {
 
 *Test first debugging* means when a bug arises, immediately add it to test suite. Regression testing is only practically if test suite can be run often/easily (automatically). These are combined into **automated regression testing** which is a best-practice.
 
+## Testing Notes
+
+- always put your proper files in a subdirectory called `src`, this is where `junit` will look for test files and associated modules
+- in the test files, use assertion print statements instead of `println` because this doesnt work with VSCode's test runner
+
+```java
+assertFalse("False Message", file.method(arg1,arg2));
+```
+
 
 
 
