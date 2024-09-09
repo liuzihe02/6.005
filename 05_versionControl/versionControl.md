@@ -240,7 +240,8 @@ Date:   Sat Mar 15 10:31:28 2008 -0700
  3 files changed, 54 insertions(+)
  ```
 
-`git log --graph` also makes a ASCII graph showing the branch and merge history:
+`git log --graph` also makes a ASCII graph showing the branch and merge history. You can also use `git lol` to view a colored version of this.
+
 ```shell
 $ git log --pretty=format:"%h %s" --graph
 * 2d3acf9 Ignore errors from SIGCHLD on trap
@@ -256,4 +257,58 @@ $ git log --pretty=format:"%h %s" --graph
 ```
 
 ### Undoing Things
+
+If we want to redo a commit, we use `--amend` to wipe the previous commit and commit again:
+```shell
+#forgot to add a file
+git add forgotten_file
+git commit --amend
+```
+
+**Unstaging a staged file**
+
+use `git restore --staged <filename>`​ to unstage
+
+**Unmodifying a Modified File**
+
+use `git restore <file>` to discard any modifications to this file in git tracking.
+
+### Working with Remotes
+
+Remote repos means simply it is elsewhere. Use `git remote` to see multiple instances or repos stored on multiple collaborators folders.
+
+**Fetching and Pulling from Remotes**
+
+`git fetch <remote>` goes to this remote project and downloads all the data from this project. Allows review changes before merging; does not auto merge or modify working directory. `git fetch origin` fetches any new work under the remote repository `origin` (not a branch).
+
+`git pull` runs `git fetch` first, then auto merges changes to local branch.
+
+**Pushing to Remotes**
+
+The command is `git push <remote> <branch>`. If we want to push to `main` branch under `origin` server, then we do `git push origin main`.  If you and someone else clone at the same time and they push upstream and then you push upstream, your push will rightly be rejected. You’ll have to fetch their work first and incorporate it into yours before you’ll be allowed to push.
+
+## Copying an object graph
+
+```
+* b0b54b3 (HEAD, origin/master, origin/HEAD, master) Greeting in Java
+*   3e62e60 Merge
+|\  
+| * 6400936 Greeting in Scheme
+* | 82e049e Greeting in Ruby
+|/  
+* 1255f4e Change the greeting
+* 41c4b8f Initial commit
+```
+
+<img src="image-1.png" width="200">
+
+Each node in the history graph is a commit. Except for the initial commit, each commit has a pointer to its parent commit. HEAD points to our current branch, which also points to the current commit.
+
+**always** `git pull` before you start working.
+
+
+
+
+
+
 
