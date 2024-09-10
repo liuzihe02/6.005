@@ -92,5 +92,33 @@ which has a stronger postcondition.
 
 ## Designing good specifications
 
+### Specifications should be coherent
+
+Specs shouldn't have many different cases or goals. Long arg lists, deeply nested if-statements, or boolean flags are signs of trouble.
+
+```java
+static int sumFind(int[] a, int[] b, int val)
+  effects: returns the sum of all indices in arrays a and b at which
+             val appears
+```
+
+This basically does 2 things, finding in 2 arrays, and then summing them. Easier to use 2 separate procedures
+
+### Results of a call should be informative
+
+```java
+static V put (Map<K,V> map, K key, V val)
+  requires: val may be null, and map may contain null values
+  effects:  inserts (key, val) into the mapping,
+              overriding any existing mapping for key, and
+              returns old value for key, unless none,
+              in which case it returns null
+```
+This method puts values into a map. The precondition allows `null` values to be stored. However, the postcondition uses `null` as a special return value for a missing key - this is useless. If `null` is returned, we can't tell if this is because `null` was stored or if the key doesn't exist. Returning `null` is useless unless you know didn't insert `null` values.
+
+### Specification should be strong enough
+
+
+
 
 
