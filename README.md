@@ -1,2 +1,62 @@
 # 6.005
 Course notes and assignments fro MIT 6.005 Software Construction (Spring 2019)
+
+Here's a ranking of the lessons' importance for software engineering and ML engineering respectively:
+
+### Software Engineering Ranking:
+
+1. Version Control (05)
+2. Specifications (06)
+3. Testing (03)
+4. Code Review (04)
+5. Debugging (11)
+6. Concurrency (19)
+7. Thread Safety (20)
+8. Abstraction Functions & Rep Invariants (13)
+9. Interfaces (14)
+10. Static Checking (01)
+11. Basic Java (02)
+12. Abstract Data Types (12)
+13. Mutability & Immutability (09)
+14. Designing Specifications (07)
+15. Avoiding Debugging (08)
+16. Equality (15)
+17. Locks & Synchronization (23)
+18. Team Version Control (27)
+19. Sockets & Networking (21)
+20. Queues & Message-Passing (22)
+21. Recursion (10)
+22. Recursive Data Types (16)
+23. Map, Filter, Reduce (25)
+
+### Machine Learning Engineering Ranking:
+
+1. Concurrency (19)
+2. Thread Safety (20)
+3. Version Control (05)
+4. Testing (03)
+5. Debugging (11)
+6. Map, Filter, Reduce (25)
+7. Abstraction Functions & Rep Invariants (13)
+8. Basic Java (02)
+9. Static Checking (01)
+10. Specifications (06)
+11. Abstract Data Types (12)
+12. Mutability & Immutability (09)
+13. Sockets & Networking (21)
+14. Queues & Message-Passing (22)
+15. Locks & Synchronization (23)
+16. Code Review (04)
+17. Interfaces (14)
+18. Recursion (10)
+19. Recursive Data Types (16)
+20. Designing Specifications (07)
+21. Avoiding Debugging (08)
+22. Equality (15)
+23. Team Version Control (27)
+
+### Least Useful:
+- Parser Generators(18)
+- Little Languages (26)
+- GUIs (24)
+- Regular Expressions & Grammars (17)
