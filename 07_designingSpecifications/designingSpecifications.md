@@ -118,6 +118,48 @@ This method puts values into a map. The precondition allows `null` values to be 
 
 ### Specification should be strong enough
 
+Specification should be strong enough to provide clear guarantees for what the method does, cover all possible scenarios including edge cases.
+
+```
+static void addAll(List<T> list1, List<T> list2)
+  effects: adds the elements of list2 to list1,
+             unless it encounters a null element,
+             at which point it throws a NullPointerException
+```
+
+This `addAll` should specify what happens when an exception is thrown, to avoid client guessing about state of the data.
+
+### Specification should be weak enough
+
+Spec should allow flexibility in implementation, doesn't over-guarantee things beyond control.
+
+```java
+static File open(String filename)
+  effects: opens a file named filename
+```
+
+The `open` method should not guarantee to always open a file, as beyond control. Should say it attempts to open a file, if it succeeds then certain properties and if fail etc.
+
+## Use abstract types where possible
+
+In Java, using abstract types often means using an interface type like `Map` or `Reader`, instead of specific implementation types like `HashMap` or `FileReader`.
+
+```java
+static ArrayList<T> reverse(ArrayList<T> list)
+  effects: returns a new list which is the reversal of list, i.e.
+             newList[i] == list[n-i-1]
+             for all 0 <= i < n, where n = list.size()
+```
+
+This forces the client to pass in `ArrayList`, and return `ArrayList`. Since the specification doesn't depend on anything specific about `ArrayList`, better to use abstract `List`.
+
+## Include Precondition or Postcondition?
+
+The most common use of precondition is because it is hard or expensive for method to check this. We then specify the preconditions that are required. If the preconditions are easy to check, just throw an exception when arguments are inappropriate - fail fast principle.
+
+
+
+
 
 
 

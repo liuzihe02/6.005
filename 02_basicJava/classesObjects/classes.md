@@ -251,6 +251,8 @@ For members, `public` and package-private apply the same. `private` means only i
 > 
 > Avoid public except constants
 
+If you make all your methods public — including helper methods that are really meant only for local use within the class — then other parts of the program may come to depend on them, which will make it harder for you to change the internal implementation of the class in the future. Your code won’t be as *ready for change*.
+
 ## Class Members
 
 We discuss using `static` keyword to create fields/methods belonging to the class, rather than an instance of that class.
@@ -263,6 +265,8 @@ We discuss using `static` keyword to create fields/methods belonging to the clas
 ### Class Variables
 
 If you want to have variables that are common to all objects(instances), we use `static`. Fields that have the `static` modifier in their declaration are called *static fields* or *class variables*. They are associated with the class, rather than with a specific instance. Every instance of the class shares a class variable, which is in one fixed location in memory.
+
+> instance methods (declared without the `static` keyword) must be called on a particular object.
 
 ```java
 public class Bicycle {
