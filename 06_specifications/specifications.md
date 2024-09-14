@@ -46,6 +46,8 @@ A specification contains:
 
 A specification of a method can talk about the parameters and return value of the method, but it should never talk about local variables of the method or private fields of the method’s class. You should consider the implementation invisible to the reader of the spec.
 
+> Note that if the specification indicates a particular exception should be thrown for some class of invalid inputs, that is a postcondition , not a precondition, and you do need to implement and test that behavior.
+
 ### Specifications in Java
 
 Java has a convention for documentation comments , in which parameters are described by `@param` clauses and results are described by `@return` and `@throws` clauses. You should put the preconditions into `@param` where possible, and postconditions into `@return` and `@throws` . So the above finding value specification would be written like 

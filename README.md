@@ -3,15 +3,16 @@ Course notes and assignments fro MIT 6.005 Software Construction (Spring 2019)
 
 ## Notes
 
-- We use `JUnit` to write our test files, with VSCode. Somehow, we need to enable Java tests which automatically creates and configures the `/lib` folder and `.jar` files for us.
+- We use `JUnit` to write our test files, with VSCode. We need to enable Java tests which automatically creates and configures the `/lib` folder and `.jar` files for us.
+  - Sometimes I've deleted the `lib` folder containing the external packages especially `JUnit`. When this happens, just reload developer window and enable java unit tests from the testing page.
+  - I have manually moved all `.jar` files to the master `lib` folder
 
-- When running (from the terminal) Java classes that are part of a package, you need to:
+- Each time you rearrange files, make sure to update where Java looks for source files in the `settings.json`
+  - Make sure to add both new `src` and `test` files to the source paths
+- If you use VS Code to run your java files, VS Code will look at `launch.json`
+  - The problem is probably here
 
-  - Be in a directory that is the root of your package structure (or specify it in the classpath).
-  - Use the fully qualified class name (including the package).
 
-- Each time you rearrange files, make sure to update where Java looks for `src` files in the `settings.json`
-- Sometimes I've deleted the `lib` folder containing the external packages especially `JUnit`. When this happens, just reload developer window and enable java unit tests from the testing page.
 
 ### Ranking of Most Important Sections for Software Engineering
 
