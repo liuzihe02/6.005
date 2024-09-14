@@ -1,4 +1,5 @@
 {
     "java.format.settings.url": "eclipse-formatter.xml",
+    "java.debug.settings.onBuildFailureProceed": true,
     // this tells java to look for source files in this directory too, not just only in 'src'!
 }

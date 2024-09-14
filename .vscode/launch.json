@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MutableReturnExample",
+            "request": "launch",
+            "mainClass": "MutableReturnExample",
+            "projectName": "6.005_54d7c0a8"
+        },
+        {
+            "type": "java",
             "name": "TurtleSoup",
             "request": "launch",
             "mainClass": "turtle.TurtleSoup",
