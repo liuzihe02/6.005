@@ -6,7 +6,9 @@ Operators may be used in building expressions, which compute values; expressions
 
 These are small code chunks like `value1 == value2` or `1 * 2 * 3`.
 
-> note that `==` compares object references, not the contents of the objects! Like even if `set1` and `set2` have the same objects, `set1==set2` will return `False`
+> note that `==` compares object references, NOT the contents of the objects! Like even if `set1` and `set2` have the same objects, `set1==set2` will return `False`
+>
+> Use `equals()` to compare strings for example.
 
 **Statements**
 

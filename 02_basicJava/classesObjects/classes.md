@@ -261,6 +261,8 @@ We discuss using `static` keyword to create fields/methods belonging to the clas
 
 - `static` basically means the method doesn't have a `self` parameter like in Python
 - We need to use the class name instead of a object reference like `ClassName.staticMethod()`
+- The method belongs to the class rather than to a specific instance
+  - Hence it doesn't have access to instance specific data; it can't use `this`
 
 ### Class Variables
 
