@@ -6,7 +6,6 @@ package twitter;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-import java.sql.Time;
 import java.time.Instant;
 
 import java.util.regex.Pattern;
