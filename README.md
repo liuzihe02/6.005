@@ -1,5 +1,5 @@
 # 6.005
-Course notes and assignments fro MIT 6.005 Software Construction (Spring 2019)
+Course notes and assignments fro MIT 6.005 Software Construction (Spring 2016). We take markdown notes in the numbered folders and do our problem set assignments in `ps0`,`ps1` etc.
 
 ## Notes
 

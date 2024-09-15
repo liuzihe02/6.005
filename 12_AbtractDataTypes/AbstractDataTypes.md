@@ -8,7 +8,7 @@
 - **Information Hiding** - Hiding details of module's implementation from rest of the system, so details can be easily changed without affecting rest of system
 - **Separation of Concerns** Each feature is the responsibility of one module; not shared by multiple modules
 
-A type is characterized by the *operations* that can be performed on it, rather than its internal structure (implementation). Hence we focus on operations rather than internal representation, and enables information hiding and encapsulation. Somee types like (Integer and Boolean) are built-in while some types are user-defined.
+A type is characterized by the *operations* that can be performed on it, rather than its internal structure (implementation). Hence we focus on operations rather than internal representation, and enables information hiding and encapsulation. This allows changing the internal representation without changing client code. Some types like (Integer and Boolean) are built-in while some types are user-defined.
 
 ## Classifying Types and their Operations
 
