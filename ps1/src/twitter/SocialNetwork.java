@@ -88,7 +88,7 @@ public class SocialNetwork {
     /**
      * Find the people in a social network who have the greatest influence, in
      * the sense that they have the most followers.
-     * 
+     *
      * @param followsGraph
      *                     a social network (as defined above)
      * @return a list of all distinct Twitter usernames in followsGraph, in
@@ -116,6 +116,7 @@ public class SocialNetwork {
         // Sort the names based on the count of strings in the respective lists
         Collections.sort(names, new Comparator<String>() {
             @Override
+            // the compare method is part of the Comparator interface
             public int compare(String name1, String name2) {
                 // Compare based on the size of the lists
                 int count1 = map.get(name1).size();
@@ -148,6 +149,64 @@ public class SocialNetwork {
             }
         }
         return inverse;
+    }
+
+    /**
+     * THEIR SOLUTION OF INFLUENCERS
+     * 
+     * 
+     * Find the people in a social network who have the greatest influence, in
+     * the sense that they have the most followers.
+     * 
+     * @param followsGraph
+     *                     a social network (as defined above)
+     * @return a list of all distinct Twitter usernames in followsGraph, in
+     *         descending order of follower count.
+     */
+    public static List<String> influencersSolution(Map<String, Set<String>> followsGraph) {
+        List<String> influenceList = new ArrayList<>();
+        // this is the "reversed" map
+        Map<String, Integer> influencers = new HashMap<>();
+
+        // add followed users to map and count their followers
+
+        // iterate over the different set of followings
+        for (Set<String> follows : followsGraph.values()) {
+            for (String followedUser : follows) {
+                followedUser = followedUser.toLowerCase();
+                if (influencers.containsKey(followedUser)) {
+                    // this person has one more person who is following them
+                    influencers.put(followedUser, influencers.get(followedUser) + 1);
+                } else {
+                    // initialize it to 0
+                    influencers.put(followedUser, 0);
+                }
+            }
+        }
+        // add remaining users; in case some people who are following other people,
+        // these some people arent added to the graph in before
+        for (String username : followsGraph.keySet()) {
+            username = username.toLowerCase();
+            if (!influencers.containsKey(username)) {
+                influencers.put(username.toLowerCase(), 0);
+            }
+        }
+        // sort users by followers
+
+        // while influencers still contains keys
+        while (!influencers.isEmpty()) {
+            // add the topmost follower
+            int topFollowers = Collections.max(influencers.values());
+            for (String username : influencers.keySet()) {
+                // search for the associated username
+                if (influencers.get(username).equals(topFollowers)) {
+                    influenceList.add(username);
+                    influencers.remove(username);
+                    break;
+                }
+            }
+        }
+        return influenceList;
     }
 
 }
