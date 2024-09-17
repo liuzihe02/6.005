@@ -1,4 +1,4 @@
-# Interfaces
+# Interfaces (taken from the Java tutorials)
 
 Often, separate groups of programmers agree to a "contract" that spells out software behaviour. Each group should write code without knowledge of the internal representation of the code of the other groups. Interfaces are such contracts. Each group can modify software internals at anytime, as long as everyone adheres to the established interface and specifications.
 
@@ -287,4 +287,3 @@ public String turnAlarmOn() {
     return Vehicle.super.turnAlarmOn();
 }
 ```
-

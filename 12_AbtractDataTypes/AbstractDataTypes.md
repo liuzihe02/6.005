@@ -34,6 +34,8 @@ A creator operation is often implemented as a **constructor** like `new ArrayLis
 
 Mutators are often signaled by a `void` return type. But not all mutators return void; `Set.add()` modifies the set and returns a Boolean indicating if the set was changed or not.
 
+> Classes, Interfaces, Primitive data types are all types. Methods are not types! Methods are members of classes or interfaces.
+
 ### ADT Examples
 
 `int` is a primitive integer type, hence immutable:
@@ -57,6 +59,8 @@ Mutators are often signaled by a `void` return type. But not all mutators return
 
 | Concept | Java Implementation | Examples |
 |---------|---------------------|----------|
+|ADT|Single Class|`String`|
+||Interfaces + Classes|`List` + `ArrayList`|
 | Creator | Constructor | `ArrayList()` |
 | | Static method | `Collections.singletonList()`, `Arrays.asList()` |
 | | Constant | `BigInteger.ZERO` |

@@ -54,11 +54,11 @@ public class SimpleMyString implements MyString {
               : new char[] { 'f', 'a', 'l', 's', 'e' };
     }
 
-    @Override public int length() { return a.length; }
+    public int length() { return a.length; }
 
-    @Override public char charAt(int i) { return a[i]; }
+    public char charAt(int i) { return a[i]; }
 
-    @Override public MyString substring(int start, int end) {
+    public MyString substring(int start, int end) {
         //uses the private no argument constructor
         SimpleMyString that = new SimpleMyString();
         //create a mew static array of length (end-start)
@@ -77,6 +77,83 @@ MyString s = new SimpleMyString(true);
 System.out.println("The first character is: " + s.charAt(0));
 ```
 
+However, notice the private empty constructors we use to make new instances in `substring(..)` before we fill in their reps with data. Adding the constructors that take `boolean b` means we have to declare the empty constructors explicitly. These do-nothing constructors are actually bad pattern: they don't assign any values to the rep, and don't establish any invariants.
 
+Most importantly, this code *breaks the abstraction barrier* as we have to know the concrete implementation class of `MyString` which is `SimpleMyString`. Because interfaces in Java cannot contain constructors, they must directly call one of the concrete class’ constructors. The spec of that constructor won’t appear anywhere in the interface, so there’s no static guarantee that different implementations will provide the same constructors.
 
+To solve this, we use static methods to implement the creator operation `valueOf` as a static factory method in the interface:
 
+```java
+public interface MyString { 
+
+    /** @param b a boolean value
+     *  @return string representation of b, either "true" or "false" */
+    public static MyString valueOf(boolean b) {
+        return new FastMyString(b);
+    }
+
+    // ...
+```
+
+which allows clients to use ADT without breaking the abstraction barrier:
+
+```java
+MyString s = MyString.valueOf(true);
+System.out.println("The first character is: " + s.charAt(0));
+```
+
+## Example `Set`
+
+`Set` is the ADT of finite elements of another type `E`. Note that we use type parameter `<E>` as a placeholder that we'll define `E` later.
+
+```java
+/** A mutable set.
+ *  @param <E> type of elements in the set */
+public interface Set<E> {
+```
+
+`Set` is an example of a *generic* type, a type whose specifications are in terms of a placeholder type to be filled in later. So `Set<E>` can stand for `Set<Integer>` or `Set<String>` and so on.
+
+```java
+    // example creator operation
+    /** Make an empty set.
+     *  @param <E> type of elements in the set
+     *  @return a new set instance, initially empty */
+    public static <E> Set<E> make() { ... }
+```
+The `make` operation is a static factory method and clients will write `Set<String> stringsSet = Set.make();` and the compile will understand `E` is actually `Sting` here.
+
+```java
+    // example observer operations
+
+    /** Get size of the set.
+     *  @return the number of elements in this set */
+    public int size();
+
+    /** Test for membership.
+     *  @param e an element
+     *  @return true iff this set contains e */
+    public boolean contains(E e);
+
+    // example mutator operations
+
+    /** Modifies this set by adding e to the set.
+     *  @param e element to add */
+    public void add(E e);
+
+    /** Modifies this set by removing e, if found.
+     *  If e is not found in the set, has no effect.
+     *  @param e element to remove */
+    public void remove(E e);
+```
+We write the specs for mutator and observer methods in terms of `E`, so we're working with an abstract model of sets.
+
+## Why Interfaces?
+
+Interfaces basically abstract away the implementations and allow for multiple valid implementations. These formalize the idea of an ADT defined as a set of operations. If we use static factory methods rather than explicit constructors, we can switch implementations easily without the client changing code/knowing which implementation we're using.
+
+- **Documentation for both the compiler and for humans** . Not only does an interface help the compiler catch ADT implementation bugs, but it is also much more useful for a human to read than the code for a concrete implementation. Such an implementation intersperses ADT-level types and specs with implementation details - easier to digest
+- **Allowing performance trade-offs** . Different implementations of the ADT can provide methods with very different performance characteristics. Different applications may work better with different choices, but we would like to code these applications in a way that is representation-independent.
+- **Optional methods** . List from the Java standard library marks all mutator methods as optional. By building an implementation that does not support these methods, we can provide immutable lists. Some operations are hard to implement with good enough performance on immutable lists, so we want mutable implementations, too. Code that doesn’t call mutators can be written to work automatically with either kind of list.
+- **Methods with intentionally underdetermined specifications** . An ADT for finite sets could leave unspecified the element order one gets when converting to a list. Some implementations might use slower method implementations that manage to keep the set representation in some sorted order, allowing quick conversion to a sorted list. Other implementations might make many methods faster by not bothering to support conversion to sorted lists.
+- **Multiple views of one class** . A Java class may implement multiple methods. For instance, a user interface widget displaying a drop-down list is natural to view as both a widget and a list. The class for this widget could implement both interfaces. In other words, we don’t implement an ADT multiple times just because we are choosing different data structures; we may make multiple implementations because many different sorts of objects may also be seen as special cases of the ADT, among other useful perspectives.
