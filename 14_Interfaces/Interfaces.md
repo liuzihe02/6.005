@@ -1,6 +1,8 @@
 # Interfaces
 
-We separate the interface of an abstract data type from its implementation, using Java `interface`. One advantage is that the interface specifies the contract for the client and nothing more. The interface is all a client programmer needs to understand the ADT. The client should need to depend on the ADT's rep.
+We separate the interface of an abstract data type from its implementation, using Java `interface`. One advantage is that the interface specifies the contract for the client and nothing more. The interface is all a client programmer needs to understand the ADT. The client should not need to depend on the ADT's representation details.
+
+> The interface basically defines the ADT in Java!
 
 Another advantage is that multiple different representations of the same ADT can co-exist in the same program, as different classes implementing the same interface. We can have `List` being implemented by `ArrayList` and also `LinkedList`.
 

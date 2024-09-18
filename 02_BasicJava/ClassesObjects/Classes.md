@@ -57,7 +57,8 @@ For encapsulation purposes, it's common to make fields private and external acce
 public class Bicycle {
         
     private int gear;
-        
+    
+    //this is a constructor
     public Bicycle(int startGear) {
         gear = startGear;
     }
@@ -70,6 +71,7 @@ public class Bicycle {
     public void setGear(int newValue) {
         gear = newValue;
     }
+}
 ```
 
 **Variable Names**
@@ -110,6 +112,8 @@ Methods within a class can have the same name if they have different parameter l
 ## Constructors for Classes
 
 A class contains constructors that are invoked to create objects from the class blueprint.
+
+The constructor method has the **exact same name** as the class. It also doesnt have a return type specified, not even `void` is needed.
 
 ```java
 public Bicycle(int startCadence, int startSpeed, int startGear) {
