@@ -174,7 +174,7 @@ public abstract class GraphInstanceTest {
         assertEquals("Graph should have 2 vertices", 2, g.vertices().size());
 
         Map<String, Integer> sources = new HashMap<>();
-        sources.put(vertex2, weight2);
+        sources.put(vertex1, weight2);
 
         assertEquals("expected Graph containing edge", sources, g.sources(vertex2));
     }
@@ -196,7 +196,7 @@ public abstract class GraphInstanceTest {
         assertEquals("Graph should have this many vertices", 2, g.vertices().size());
 
         Map<String, Integer> sources = new HashMap<>();
-        sources.put(vertex2, weight2);
+        sources.put(vertex1, weight2);
 
         assertEquals("expected Graph containing edge", sources, g.sources(vertex2));
     }

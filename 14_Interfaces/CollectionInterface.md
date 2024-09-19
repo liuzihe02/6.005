@@ -30,6 +30,7 @@ The `Collection` interface is used to pass around collections of objects where m
 - `boolean retainAll(Collection<?> c)` retains only the elements in this collection that are also contained in `c`. returns `true` if this collection changed
 - `boolean containsAll(Collection<?> c)` returns `true` if this collection contains all the elements of `c`
 - `void clear()` removes all elements from this collection
+- `default boolean removeIf(Predicate<? super E> filter)` removes all elements from this collection that satisfies the given condition. returns `true` if any elements were removed
 
 **Traversal Methods**
 
@@ -61,7 +62,7 @@ public interface Iterator<E> {
 
 The `remove` method removes the last element that was returned by `next` from the underlying `Collection`. The `remove` method may be called only once per call to `next` and throws an exception if this rule is violated.
 
-> Note that `Iterator.remove` is the *only* safe way to modify a collection during iteration
+> Note that `Iterator.remove` is the **ONLY** safe way to modify a collection during iteration
 
 Use an `Iterator` instead of `for-each` when you need to
 - remove the current element

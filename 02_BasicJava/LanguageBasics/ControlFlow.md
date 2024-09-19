@@ -242,6 +242,18 @@ for (String key : turtles.keySet()) {
 }
 ```
 
+### `For` Bugs
+```java
+for (Edge e : edges) {
+    // the edge exists
+    if (checkEdgeExist(e)) {
+        edges.remove(e);
+    }
+}
+```
+
+Do not modify a `Collection` while you're iterating over it; this will raise `ConcurrentModificationException`. We can either use an `Iterator` with the `remove` method, or `removeIf` method for `Collection`.
+
 ## Branching Statements
 
 **The `break` statement**

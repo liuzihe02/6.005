@@ -72,7 +72,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
         graph.add(vertex2);
         graph.set(vertex1, vertex2, weight1);
 
-        String expected = "v1->v2(weight = 1)\n";
+        String expected = "v1->v2(weight=1)\n";
 
         assertEquals("expected string", expected, graph.toString());
     }
@@ -87,7 +87,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
         graph.set(vertex1, vertex2, weight1);
         graph.set(vertex1, vertex3, weight2);
 
-        String expected = "v1->v2(weight = 1)\nv1->v3(weight = 2)\n";
+        String expected = "v1->v2(weight=1)\n  v1->v3(weight=2)\n";
 
         assertEquals("expected string", expected, graph.toString());
     }
@@ -103,7 +103,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     // test getters
     @Test
     public void testGet() {
-        Edge<String> edge = new Edge<>(vertex1, vertex2, weight1);
+        Edge edge = new Edge(vertex1, vertex2, weight1);
 
         assertEquals("expected string 'v2'", edge.getTarget(), "v2");
         assertEquals("expected string 'v1'", edge.getSource(), "v1");
@@ -113,7 +113,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     // test toString
     @Test
     public void testToString() {
-        Edge<String> edge = new Edge<>(vertex1, vertex2, weight1);
+        Edge edge = new Edge(vertex1, vertex2, weight1);
         String expected = "v1->v2(weight=1)";
 
         assertEquals("expected string", expected, edge.toString());

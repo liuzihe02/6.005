@@ -9,51 +9,60 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An implementation of Graph.
+ * An valid implementation of Graph, using only
  * 
- * <p>PS2 instructions: you MUST use the provided rep.
+ * vertices which contains all the information about the vertex
+ * 
+ * <p>
+ * PS2 instructions: you MUST use the provided rep.
  */
 public class ConcreteVerticesGraph implements Graph<String> {
-    
+
     private final List<Vertex> vertices = new ArrayList<>();
-    
+
     // Abstraction function:
-    //   TODO
+    // TODO
     // Representation invariant:
-    //   TODO
+    // TODO
     // Safety from rep exposure:
-    //   TODO
-    
+    // TODO
+
     // TODO constructor
-    
+
     // TODO checkRep
-    
-    @Override public boolean add(String vertex) {
+
+    @Override
+    public boolean add(String vertex) {
         throw new RuntimeException("not implemented");
     }
-    
-    @Override public int set(String source, String target, int weight) {
+
+    @Override
+    public int set(String source, String target, int weight) {
         throw new RuntimeException("not implemented");
     }
-    
-    @Override public boolean remove(String vertex) {
+
+    @Override
+    public boolean remove(String vertex) {
         throw new RuntimeException("not implemented");
     }
-    
-    @Override public Set<String> vertices() {
+
+    @Override
+    public Set<String> vertices() {
         throw new RuntimeException("not implemented");
     }
-    
-    @Override public Map<String, Integer> sources(String target) {
+
+    @Override
+    public Map<String, Integer> sources(String target) {
         throw new RuntimeException("not implemented");
     }
-    
-    @Override public Map<String, Integer> targets(String source) {
+
+    @Override
+    public Map<String, Integer> targets(String source) {
         throw new RuntimeException("not implemented");
     }
-    
+
     // TODO toString()
-    
+
 }
 
 /**
@@ -61,26 +70,27 @@ public class ConcreteVerticesGraph implements Graph<String> {
  * Mutable.
  * This class is internal to the rep of ConcreteVerticesGraph.
  * 
- * <p>PS2 instructions: the specification and implementation of this class is
+ * <p>
+ * PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
 class Vertex {
-    
+
     // TODO fields
-    
+
     // Abstraction function:
-    //   TODO
+    // TODO
     // Representation invariant:
-    //   TODO
+    // TODO
     // Safety from rep exposure:
-    //   TODO
-    
+    // TODO
+
     // TODO constructor
-    
+
     // TODO checkRep
-    
+
     // TODO methods
-    
+
     // TODO toString()
-    
+
 }

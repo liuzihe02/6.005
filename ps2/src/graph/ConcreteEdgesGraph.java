@@ -5,12 +5,17 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 
 /**
- * An implementation of Graph.
+ * A valid implementation of Graph, using only
+ * 
+ * vertices which contain the labels of all the unique vertices
+ * edges which contain all the edges, and is unordered
  * 
  * <p>
  * PS2 instructions: you MUST use the provided rep.
@@ -48,35 +53,123 @@ public class ConcreteEdgesGraph implements Graph<String> {
 
     @Override
     public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+        // doesnt contain and we want to add it
+        if (!vertices.contains(vertex)) {
+            vertices.add(vertex);
+            return true;
+        }
+        // contains and we dont do anything
+        else {
+            return false;
+        }
     }
 
     @Override
     public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
+        // weight is nonzero
+        if (weight != 0) {
+            // first add both source and target
+            add(source);
+            add(target);
+            // check if this edge already exists
+
+            for (Edge e : edges) {
+                // the edge exists
+                if (e.getSource().equals(source) && e.getTarget().equals(target)) {
+                    // update this weight
+                    int oldWeight = e.getWeight();
+                    e.setWeight(weight);
+                    return oldWeight;
+                }
+            }
+            ;
+            // if we get here, weight does not currently exist
+            edges.add(new Edge(source, target, weight));
+            return 0;
+        }
+        // weight is zero, we need to remove this weight
+        // YOU CANNOT MODIFY A COLLECTION WHILE ITERATING OVER IT
+        else {
+            // try to find this weight to remove
+            Iterator<Edge> iterator = edges.iterator();
+            while (iterator.hasNext()) {
+                Edge e = iterator.next();
+                if (e.getSource().equals(source) && e.getTarget().equals(target)) {
+                    int oldWeight = e.getWeight();
+                    iterator.remove();
+                    return oldWeight;
+                }
+            }
+            // could not find weight to remove
+            return 0;
+        }
     }
 
     @Override
     public boolean remove(String vertex) {
-        throw new RuntimeException("not implemented");
+        // first determine if vertex is in our set
+        if (vertices.contains(vertex)) {
+            // first remove vertex from the set, we can do this directly due to hashing
+            vertices.remove(vertex);
+            // next remove all mentions from our list of edges. cannot use for loop for this
+            // this is an ArrayList method
+            edges.removeIf(e -> e.getTarget().equals(vertex) || e.getSource().equals(vertex));
+            ;
+            return true;
+        }
+        // vertex not in our set
+        else {
+            return false;
+        }
     }
 
     @Override
     public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+        // defensive copying, also note that vertices is private!
+        return new HashSet<>(vertices);
     }
 
     @Override
     public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
+        Map<String, Integer> sourceMap = new HashMap<>();
+
+        // get all the sources for this target
+        for (Edge e : edges) {
+            // found the target
+            if (e.getTarget().equals(target)) {
+                sourceMap.put(e.getSource(), e.getWeight());
+            }
+        }
+        ;
+        return sourceMap;
+
     }
 
     @Override
     public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
+        Map<String, Integer> targetMap = new HashMap<>();
+
+        // get all the sources for this target
+        for (Edge e : edges) {
+            // found the source
+            if (e.getSource().equals(source)) {
+                targetMap.put(e.getTarget(), e.getWeight());
+            }
+        }
+        ;
+        return targetMap;
     }
 
-    // TODO toString()
+    // toString(), we override Object.toString() always!
+    @Override
+    public String toString() {
+        List<String> edgeStrings = new ArrayList<>();
+        for (Edge e : edges) {
+            edgeStrings.add(e.getSource() + "->" + e.getTarget() + "(weight=" + e.getWeight() + ")\n");
+        }
+        String edgesString = String.join("  ", edgeStrings);
+        return edgesString;
+    }
 
 }
 
@@ -96,7 +189,8 @@ class Edge {
     // fields
     private final String source;
     private final String target;
-    private final Integer weight;
+    // we can reassign this weight
+    private Integer weight;
 
     // Abstraction function:
     // AF(source, target, weight) = an edge in a directed graph with a
@@ -134,6 +228,11 @@ class Edge {
 
     public Integer getWeight() {
         return weight;
+    }
+
+    // set the weight field to a new Integer
+    public void setWeight(Integer newWeight) {
+        this.weight = newWeight;
     }
 
     // toString(), we override Object.toString()
