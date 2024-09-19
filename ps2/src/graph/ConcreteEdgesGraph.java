@@ -38,10 +38,10 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
     // checkRep
-    public checkRep() {
-        for (Edge e:edges){
-            if (e.weight<0){
-
+    public void checkRep() {
+        for (Edge e : edges) {
+            if (e.getWeight() < 0) {
+                throw new AssertionError("weights be zero or more!");
             }
         }
     }
@@ -81,12 +81,14 @@ public class ConcreteEdgesGraph implements Graph<String> {
 }
 
 /**
- * An edge between two vertices
+ * An edge between two vertices.
  * Immutable.
  * This class is internal to the rep of ConcreteEdgesGraph.
  * 
  * you are unable to create an empty edge. All edges must be initialized with
  * source, target, weight
+ * 
+ * we use generics here
  *
  */
 class Edge {
@@ -134,10 +136,11 @@ class Edge {
         return weight;
     }
 
-    // toString()
+    // toString(), we override Object.toString()
+    @Override
     public String toString() {
         // automatically converts Integer to string representation
-        return source + "->" + target + "(" + weight + ")";
+        return source + "->" + target + "(weight=" + weight + ")";
     }
 
 }
