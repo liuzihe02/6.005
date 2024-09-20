@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * An valid implementation of Graph, using only
@@ -92,7 +93,8 @@ class Vertex {
 
     // fields
     private final String label;
-    private final Map<Vertex, Integer> childEdges = new HashMap<>();
+    // insertion order
+    private final Map<Vertex, Integer> childEdges = new LinkedHashMap<>();
 
     // Abstraction function:
     // AF(label, inEdges, outEdges) = a labeled vertex with a set of incoming and
@@ -162,19 +164,17 @@ class Vertex {
         // check if vertex already exists
         if (childEdges.containsKey(childVertex)) {
             int oldWeight = childEdges.get(childVertex);
-            childEdges.remove(childVertex)
+            childEdges.remove(childVertex);
             return oldWeight;
         }
         // doesnt contain child vertex
         else {
-            childEdges.put(childVertex, weight);
-            return weight;
+            return 0;
         }
     }
 
     String getLabel() {
-        // TODO
-        return "";
+        return label;
     }
 
     // note that this method returns the mutable object directly, be careful with
@@ -186,7 +186,13 @@ class Vertex {
     // TODO toString()
     @Override
     public String toString() {
-        // TODO
+        List<String> edgeStrings = new ArrayList<>();
+        for (Map.Entry<Vertex, Integer> e : childEdges.entrySet()) {
+            edgeStrings.add(label + "->" + e.getKey().label + "(weight=" + e.getValue() + ")\n");
+        }
+        // two spaces here!
+        String edgesString = String.join("    ", edgeStrings);
+        return edgesString;
     }
 
 }

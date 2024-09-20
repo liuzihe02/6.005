@@ -167,7 +167,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
         for (Edge e : edges) {
             edgeStrings.add(e.getSource() + "->" + e.getTarget() + "(weight=" + e.getWeight() + ")\n");
         }
-        String edgesString = String.join("  ", edgeStrings);
+        String edgesString = String.join("    ", edgeStrings);
         return edgesString;
     }
 

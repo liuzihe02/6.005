@@ -87,7 +87,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
         graph.set(vertex1, vertex2, weight1);
         graph.set(vertex1, vertex3, weight2);
 
-        String expected = "v1->v2(weight=1)\n  v1->v3(weight=2)\n";
+        String expected = "v1->v2(weight=1)\n    v1->v3(weight=2)\n";
 
         assertEquals("expected string", expected, graph.toString());
     }
