@@ -16,6 +16,8 @@ Test-frst programming!
 ### Writing an ADT:
 
 1. **Spec.** Write specs for the operations of the datatype, including method signatures, preconditions, and postconditions.
+   - Including AF, RI, Rep Safety, constructors, fields, method signatures
+   - This usually goes into the interface
 2. **Test.** Write test cases for the ADT's operations.
    - Again, this puts pressure on the spec, may need to modify specs
 3. **Implement.** For an ADT, this part expands to:
@@ -25,9 +27,10 @@ Test-frst programming!
 
 ### Writing a program (consisting of ADTs and procedures):
 
-1. **Choose datatypes.** Decide which ones will be mutable and which immutable.
+1. **Choose classes and datatypes.** Decide what the types do. Decide which datatypes will be mutable and which immutable.
 2. **Choose procedures.** Write your top-level procedure and break it down into smaller steps.
 3. **Spec.** Spec out the ADTs and procedures. Keep the ADT operations simple and few at first. Only add complex operations as you need them.
+   
 4. **Test.** Write test cases for each unit (ADT or procedure).
 5. **Implement simply first.** Choose simple, brute-force representations. The point here is to put pressure on the specs and the tests, and try to pull your whole program together as soon as possible.
 6. **Reimplement and iterate and optimize.** Now consider edge cases, optimizations etc

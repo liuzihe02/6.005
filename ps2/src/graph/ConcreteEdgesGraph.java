@@ -34,8 +34,8 @@ public class ConcreteEdgesGraph implements Graph<String> {
 
     // Safety from rep exposure:
     // all fields are private and final
-    // vertices and edges is a mutable set, so return defensive copies to avoid
-    // sharing true objects with clients
+    // vertices and edges, so return defensive copies of them
+    // to prevent rep exposure
 
     // Empty constructor
     public ConcreteEdgesGraph() {
@@ -203,9 +203,10 @@ class Edge {
     // all fields are private and final
     // source and target are immutable types, while weight is Integer, so all fields
     // are immutable; can return directly!
+    // ALL METHODS HERE ARE PACKAGE-PRIVATE (DEFAULT ACCESS)
 
     // constructor
-    public Edge(String source, String target, Integer weight) {
+    Edge(String source, String target, Integer weight) {
         this.source = source;
         this.target = target;
         this.weight = weight;
@@ -218,20 +219,20 @@ class Edge {
     }
 
     // methods
-    public String getSource() {
+    String getSource() {
         return source;
     }
 
-    public String getTarget() {
+    String getTarget() {
         return target;
     }
 
-    public Integer getWeight() {
+    Integer getWeight() {
         return weight;
     }
 
     // set the weight field to a new Integer
-    public void setWeight(Integer newWeight) {
+    void setWeight(Integer newWeight) {
         this.weight = newWeight;
     }
 
