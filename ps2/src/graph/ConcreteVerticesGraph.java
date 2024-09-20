@@ -15,14 +15,15 @@ import java.util.LinkedHashMap;
 /**
  * An valid implementation of Graph, using only
  * 
- * vertices which contains all the information about the vertex
+ * vertices which contains the parent vertex
+ * each Vertex object containing all its children Vertexes, as pointers
  * 
  * <p>
  * PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteVerticesGraph implements Graph<String> {
+public class ConcreteVerticesGraph<L> implements Graph<L> {
 
-    private final List<Vertex> vertices = new ArrayList<>();
+    private final List<Vertex<L>> vertices = new ArrayList<>();
 
     // Abstraction function:
     // AF (vertices): directed graph composed of
@@ -38,45 +39,155 @@ public class ConcreteVerticesGraph implements Graph<String> {
 
     // Empty constructor
     public ConcreteVerticesGraph() {
+        // will access checkRep method for ConcreteVerticesGraph
         checkRep();
     }
 
     // checkRep
     public void checkRep() {
-        // TODO:
+        for (Vertex<L> vertex : vertices) {
+            vertex.checkRep();
+        }
     }
 
     @Override
-    public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+    public boolean add(L vertex) {
+        if (inGraph(vertex)) {
+            return false;
+        }
+        ;
+        // current vertex doesn't exist
+        // create a new Vertex object
+        Vertex<L> vertexObj = new Vertex<>(vertex);
+        vertices.add(vertexObj);
+        return true;
     }
 
     @Override
-    public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
+    public int set(L source, L target, int weight) {
+        // add source if its not in list
+        add(source);
+        // add target if its not in list
+        add(target);
+
+        // find source
+        Vertex<L> sourceObj = findVertex(source);
+        Vertex<L> targetObj = findVertex(target);
+        return sourceObj.setOutEdge(targetObj, weight);
     }
 
     @Override
-    public boolean remove(String vertex) {
-        throw new RuntimeException("not implemented");
+    public boolean remove(L vertex) {
+        if (inGraph(vertex)) {
+            // remove the actual vertex
+            Vertex<L> toRemove = findVertex(vertex);
+            vertices.remove(toRemove);
+            // loop through remaining vertices and remove all of its mentions as child
+            for (Vertex<L> remain : vertices) {
+                // remove it if the key exists
+                remain.setOutEdge(toRemove, 0);
+            }
+            ;
+            return true;
+        }
+        // didnt exist
+        else {
+            return false;
+        }
     }
 
     @Override
-    public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+    public Set<L> vertices() {
+        Set<L> labels = new HashSet<>();
+        for (Vertex<L> vertexObj : vertices) {
+            labels.add(vertexObj.getLabel());
+        }
+        return labels;
     }
 
     @Override
-    public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
+    /**
+     * target is basically the child. we want to get all the parents of this child
+     * 
+     * @param target
+     * @return
+     */
+    public Map<L, Integer> sources(L target) {
+        Map<L, Integer> parents = new HashMap<>();
+
+        for (Vertex<L> sourceObj : vertices) {
+            Map<L, Integer> childEdges = sourceObj.getOutEdges();
+            if (childEdges.containsKey(target)) {
+                // add the label and integer weight
+                parents.put(sourceObj.getLabel(), childEdges.get(target));
+            }
+        }
+        ;
+        return parents;
     }
 
     @Override
-    public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
+    public Map<L, Integer> targets(L source) {
+        // source not even found
+        if (inGraph(source)) {
+            Vertex<L> sourceObj = findVertex(source);
+            return sourceObj.getOutEdges();
+        } else {
+            return new HashMap<>();
+        }
+
     }
 
-    // TODO toString()
+    /**
+     * pass in a label, not the actual Vertex object!
+     * 
+     * @param vertex
+     * @return whether the Vertex object corresponding to this label exists in the
+     *         graph
+     */
+    private boolean inGraph(L vertex) {
+        for (Vertex<L> vertexObj : vertices) {
+            if (vertexObj.getLabel().equals(vertex)) {
+                return true;
+            }
+        }
+        ;
+        return false;
+    }
+
+    /**
+     * Get the actual Vertex object
+     * 
+     * remember, returning null in java is generally not good practice!
+     * 
+     * @param vertex The label of the vertex to find
+     * @return The Vertex object with the given label
+     * @throws AssertionError if the vertex is not in the graph
+     */
+    private Vertex<L> findVertex(L vertex) {
+        for (Vertex<L> vertexObj : vertices) {
+            if (vertexObj.getLabel().equals(vertex)) {
+                return vertexObj;
+            }
+        }
+        // If we get here, the vertex is in the graph but wasn't found
+        // This should never happen if inGraph() is implemented correctly
+        throw new AssertionError("Vertex not found!");
+    }
+
+    // toString(), we override Object.toString() always!
+    @Override
+    public String toString() {
+        List<String> edgeStrings = new ArrayList<>();
+        for (Vertex<L> v : vertices) {
+            // iterate over edges
+            for (Map.Entry<L, Integer> entry : v.getOutEdges().entrySet()) {
+                edgeStrings.add(v.getLabel() + "->" + entry.getKey() + "(weight=" + entry.getValue() + ")\n");
+            }
+        }
+        String edgesString = String.join("    ", edgeStrings);
+        return edgesString;
+    }
 
 }
 
@@ -89,12 +200,15 @@ public class ConcreteVerticesGraph implements Graph<String> {
  * PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
-class Vertex {
+class Vertex<L> {
 
-    // fields
-    private final String label;
+    // fields, L here stands for label
+    private final L label;
     // insertion order
-    private final Map<Vertex, Integer> childEdges = new LinkedHashMap<>();
+    // this maps the IDENTIFIER of the childvertex to its weight
+    // most important, we can directly do comparison with this identifier; hashable
+    // id of v1 == id of v2
+    private final Map<L, Integer> childEdges = new LinkedHashMap<>();
 
     // Abstraction function:
     // AF(label, inEdges, outEdges) = a labeled vertex with a set of incoming and
@@ -109,13 +223,13 @@ class Vertex {
     // make defensive copies to avoid sharing the rep with clients.
 
     // constructor
-    Vertex(String label) {
+    Vertex(L label) {
         this.label = label;
         checkRep();
     }
 
     // checkRep
-    private void checkRep() {
+    void checkRep() {
         for (Integer value : childEdges.values()) {
             if (value <= 0) {
                 throw new AssertionError("weight must be positive!");
@@ -124,73 +238,53 @@ class Vertex {
     }
 
     /**
-     * if edge didnt already exist, then add a new edge
-     * if it already existed, update the edge
+     * Add a new edge or update an existing one.
      * 
-     * @param vertex
-     * @param weight must be more than 0
-     * @return the old weight value if it previously existed. return 0 if it didnt
-     *         previously exist
+     * @param childVertex The target vertex
+     * @param weight      Must be non-negative
+     * @return The old weight if the edge existed, 0 otherwise
      */
-    int setOutEdge(Vertex childVertex, Integer weight) {
-        // check if valid weight
-        if (weight <= 0) {
-            throw new AssertionError("weight must be more than zero!");
+    int setOutEdge(Vertex<L> childVertex, Integer weight) {
+        if (weight < 0) {
+            throw new AssertionError("Weight must be non-negative!");
         }
-        // acceptable weight
-        else {
-            // check if vertex already exists
-            if (childEdges.containsKey(childVertex)) {
-                int oldWeight = childEdges.get(childVertex);
-                childEdges.put(childVertex, weight);
-                return oldWeight;
-            }
-            // doesnt contain child vertex
-            else {
-                childEdges.put(childVertex, weight);
-                return weight;
-            }
 
+        L childLabel = childVertex.getLabel();
+        // get the oldWeight, note that if its null it means it didnt exist before
+        Integer oldWeight = childEdges.get(childLabel);
+
+        if (weight == 0) {
+            childEdges.remove(childLabel);
+        } else {
+            childEdges.put(childLabel, weight);
         }
+
+        return oldWeight != null ? oldWeight : 0;
     }
 
-    /**
-     * 
-     * @param vertex
-     * @return the old weight if it previously existed. return 0 if it didnt
-     *         previously exist
-     */
-    int removeOutEdge(Vertex childVertex) {
-        // check if vertex already exists
-        if (childEdges.containsKey(childVertex)) {
-            int oldWeight = childEdges.get(childVertex);
-            childEdges.remove(childVertex);
-            return oldWeight;
-        }
-        // doesnt contain child vertex
-        else {
-            return 0;
-        }
-    }
-
-    String getLabel() {
+    L getLabel() {
         return label;
     }
 
-    // note that this method returns the mutable object directly, be careful with
-    // this!
-    Map<Vertex, Integer> getOutEdges() {
-        return childEdges;
+    /*
+     * note this method returns a defensive copy, but is a little subtle. the
+     * references to the object inside is still the same!
+     * in other words we can still mutate the objects inside this defensive copy
+     * 
+     * but we removing or adding elements to this defensive copy does not modify the
+     * original copy
+     */
+    Map<L, Integer> getOutEdges() {
+        return new HashMap<>(childEdges);
     }
 
-    // TODO toString()
     @Override
     public String toString() {
         List<String> edgeStrings = new ArrayList<>();
-        for (Map.Entry<Vertex, Integer> e : childEdges.entrySet()) {
-            edgeStrings.add(label + "->" + e.getKey().label + "(weight=" + e.getValue() + ")\n");
+        for (Map.Entry<L, Integer> e : childEdges.entrySet()) {
+            edgeStrings.add(label + "->" + e.getKey() + "(weight=" + e.getValue() + ")\n");
         }
-        // two spaces here!
+        // four spaces here!
         String edgesString = String.join("    ", edgeStrings);
         return edgesString;
     }

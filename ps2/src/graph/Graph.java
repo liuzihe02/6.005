@@ -16,7 +16,7 @@ import java.util.Set;
  * PS2 instructions: this is a required ADT interface.
  * You MUST NOT change the specifications or add additional methods.
  * 
- * @param <L> type of vertex labels in this graph, must be IMMUTABLE
+ * @param <L> type of vertex LABELS in this graph, must be IMMUTABLE
  */
 public interface Graph<L> {
 

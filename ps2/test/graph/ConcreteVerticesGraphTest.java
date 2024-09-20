@@ -52,7 +52,6 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // covers num vertices = 0
     // num edges = 0
     @Test
-    @Ignore
     public void testToStringZeroVerticesZeroEdges() {
         Graph<String> graph = emptyInstance();
         String expected = "";
@@ -62,12 +61,11 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
 
     // covers num vertices = 1
     @Test
-    @Ignore
     public void testToStringOneVertex() {
         Graph<String> graph = emptyInstance();
         graph.add(vertex1);
 
-        String expected = "v1: inEdges{}\toutEdges{}\n";
+        String expected = "";
 
         assertEquals("expected string", expected, graph.toString());
     }
@@ -75,21 +73,19 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // covers num vertices = n
     // num edges = 1
     @Test
-    @Ignore
     public void testToStringNVerticesOneEdge() {
         Graph<String> graph = emptyInstance();
         graph.add(vertex1);
         graph.add(vertex2);
         graph.set(vertex1, vertex2, weight1);
 
-        String expected = "";
+        String expected = "v1->v2(weight=1)\n";
 
         assertEquals("expected string", expected, graph.toString());
     }
 
     // covers num edges = n
     @Test
-    @Ignore
     public void testToStringNEdges() {
         Graph<String> graph = emptyInstance();
         graph.add(vertex1);
@@ -98,7 +94,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
         graph.set(vertex1, vertex2, weight1);
         graph.set(vertex1, vertex3, weight2);
 
-        String expected = "";
+        String expected = "v1->v2(weight=1)\n    v1->v3(weight=2)\n";
 
         assertEquals("expected string", expected, graph.toString());
     }
@@ -124,7 +120,7 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // test getLabel()
     @Test
     public void testGetLabel() {
-        Vertex v1 = new Vertex(vertex1);
+        Vertex<String> v1 = new Vertex<>(vertex1);
 
         assertEquals("expected to get label 'v1'", vertex1, v1.getLabel());
     }
@@ -134,9 +130,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // covers num edges - 0
     @Test
     public void testGetOutEdgesNone() {
-        Vertex v1 = new Vertex(vertex1);
+        Vertex<String> v1 = new Vertex<>(vertex1);
 
-        Map<Vertex, Integer> outEdges = v1.getOutEdges();
+        Map<String, Integer> outEdges = v1.getOutEdges();
 
         assertTrue("expected empty map", outEdges.isEmpty());
     }
@@ -144,33 +140,33 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // covers num edges - 1
     @Test
     public void testGetOutEdgesOne() {
-        Vertex v1 = new Vertex(vertex1);
-        Vertex v2 = new Vertex(vertex2);
+        Vertex<String> v1 = new Vertex<>(vertex1);
+        Vertex<String> v2 = new Vertex<>(vertex2);
         v1.setOutEdge(v2, weight1);
 
-        Map<Vertex, Integer> outEdges = v1.getOutEdges();
+        Map<String, Integer> outEdges = v1.getOutEdges();
 
         assertEquals("expected map size 1", 1, outEdges.size());
-        assertTrue("expected map to contain key", outEdges.containsKey(v2));
-        assertEquals("expected correct weight", weight1, (int) outEdges.get(v2));
+        assertTrue("expected map to contain key", outEdges.containsKey(v2.getLabel()));
+        assertEquals("expected correct weight", weight1, (int) outEdges.get(v2.getLabel()));
     }
 
     // covers num edges - n
     @Test
     public void testGetOutEdgesMultiple() {
-        Vertex v1 = new Vertex(vertex1);
-        Vertex v2 = new Vertex(vertex2);
-        Vertex v3 = new Vertex(vertex3);
+        Vertex<String> v1 = new Vertex<>(vertex1);
+        Vertex<String> v2 = new Vertex<>(vertex2);
+        Vertex<String> v3 = new Vertex<>(vertex3);
         v1.setOutEdge(v2, weight1);
         v1.setOutEdge(v3, weight2);
 
-        Map<Vertex, Integer> outEdges = v1.getOutEdges();
+        Map<String, Integer> outEdges = v1.getOutEdges();
 
         assertEquals("expected map size 2", 2, outEdges.size());
-        assertTrue("expected map to contain key", outEdges.containsKey(v2));
-        assertTrue("expected map to contain key", outEdges.containsKey(v3));
-        assertEquals("expected correct weight", weight1, (int) outEdges.get(v2));
-        assertEquals("expected correct weight", weight2, (int) outEdges.get(v3));
+        assertTrue("expected map to contain key", outEdges.containsKey(v2.getLabel()));
+        assertTrue("expected map to contain key", outEdges.containsKey(v3.getLabel()));
+        assertEquals("expected correct weight", weight1, (int) outEdges.get(v2.getLabel()));
+        assertEquals("expected correct weight", weight2, (int) outEdges.get(v3.getLabel()));
     }
 
     // tests setOutEdge()
@@ -178,30 +174,30 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // covers edge - not present before
     @Test
     public void testSetOutEdgeNotPresent() {
-        Vertex v1 = new Vertex(vertex1);
-        Vertex v2 = new Vertex(vertex2);
+        Vertex<String> v1 = new Vertex<>(vertex1);
+        Vertex<String> v2 = new Vertex<>(vertex2);
 
         v1.setOutEdge(v2, weight1);
-        Map<Vertex, Integer> outEdges = v1.getOutEdges();
+        Map<String, Integer> outEdges = v1.getOutEdges();
 
         assertEquals("expected map size 1", 1, outEdges.size());
-        assertTrue("expected map to contain key", outEdges.containsKey(v2));
-        assertEquals("expected correct weight", weight1, (int) outEdges.get(v2));
+        assertTrue("expected map to contain key", outEdges.containsKey(v2.getLabel()));
+        assertEquals("expected correct weight", weight1, (int) outEdges.get(v2.getLabel()));
     }
 
     // covers edge - present before, update the edge
     @Test
     public void testSetOutEdgePresent() {
-        Vertex v1 = new Vertex(vertex1);
-        Vertex v2 = new Vertex(vertex2);
+        Vertex<String> v1 = new Vertex<>(vertex1);
+        Vertex<String> v2 = new Vertex<>(vertex2);
         v1.setOutEdge(v2, weight1);
 
         v1.setOutEdge(v2, weight2);
-        Map<Vertex, Integer> outEdges = v1.getOutEdges();
+        Map<String, Integer> outEdges = v1.getOutEdges();
 
         assertEquals("expected map size 1", 1, outEdges.size());
-        assertTrue("expected map to contain key", outEdges.containsKey(v2));
-        assertEquals("expected updated weight", weight2, (int) outEdges.get(v2));
+        assertTrue("expected map to contain key", outEdges.containsKey(v2.getLabel()));
+        assertEquals("expected updated weight", weight2, (int) outEdges.get(v2.getLabel()));
     }
 
     // tests removeOutEdge()
@@ -209,10 +205,10 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // covers edge - not present
     @Test
     public void testRemoveOutEdgeNotPresent() {
-        Vertex v1 = new Vertex(vertex1);
-        Vertex v2 = new Vertex(vertex2);
+        Vertex<String> v1 = new Vertex<>(vertex1);
+        Vertex<String> v2 = new Vertex<>(vertex2);
 
-        int removed = v1.removeOutEdge(v2);
+        int removed = v1.setOutEdge(v2, 0);
 
         assertEquals("expected removal to fail", 0, removed);
         assertTrue("expected empty outEdges", v1.getOutEdges().isEmpty());
@@ -221,13 +217,13 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // covers edge - present
     @Test
     public void testRemoveOutEdgePresent() {
-        Vertex v1 = new Vertex(vertex1);
-        Vertex v2 = new Vertex(vertex2);
+        Vertex<String> v1 = new Vertex<>(vertex1);
+        Vertex<String> v2 = new Vertex<>(vertex2);
         v1.setOutEdge(v2, weight1);
 
         assertEquals("expected map size of 1", 1, v1.getOutEdges().size());
 
-        int removed = v1.removeOutEdge(v2);
+        int removed = v1.setOutEdge(v2, 0);
 
         assertEquals("expected removal to succeed", 1, removed);
         assertTrue("expected empty outEdges", v1.getOutEdges().isEmpty());
@@ -236,9 +232,9 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     // Test toString()
     @Test
     public void testVertexToString() {
-        Vertex v1 = new Vertex(vertex1);
-        Vertex v2 = new Vertex(vertex2);
-        Vertex v3 = new Vertex(vertex3);
+        Vertex<String> v1 = new Vertex<>(vertex1);
+        Vertex<String> v2 = new Vertex<>(vertex2);
+        Vertex<String> v3 = new Vertex<>(vertex3);
 
         v1.setOutEdge(v2, weight1);
         v1.setOutEdge(v3, weight2);
@@ -247,5 +243,4 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
 
         assertEquals("expected string representation", expected, v1.toString());
     }
-
 }
