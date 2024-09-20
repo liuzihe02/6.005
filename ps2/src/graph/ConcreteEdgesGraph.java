@@ -20,10 +20,10 @@ import java.util.Iterator;
  * <p>
  * PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteEdgesGraph implements Graph<String> {
+public class ConcreteEdgesGraph<L> implements Graph<L> {
 
-    private final Set<String> vertices = new HashSet<>();
-    private final List<Edge> edges = new ArrayList<>();
+    private final Set<L> vertices = new HashSet<>();
+    private final List<Edge<L>> edges = new ArrayList<>();
 
     // Abstraction function:
     // AF (vertices, edges) = directed graph of distinct vertices connected by
@@ -44,7 +44,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
 
     // checkRep
     public void checkRep() {
-        for (Edge e : edges) {
+        for (Edge<L> e : edges) {
             if (e.getWeight() < 0) {
                 throw new AssertionError("weights be zero or more!");
             }
@@ -52,7 +52,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
     @Override
-    public boolean add(String vertex) {
+    public boolean add(L vertex) {
         // doesnt contain and we want to add it
         if (!vertices.contains(vertex)) {
             vertices.add(vertex);
@@ -65,7 +65,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
     @Override
-    public int set(String source, String target, int weight) {
+    public int set(L source, L target, int weight) {
         // weight is nonzero
         if (weight != 0) {
             // first add both source and target
@@ -73,7 +73,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
             add(target);
             // check if this edge already exists
 
-            for (Edge e : edges) {
+            for (Edge<L> e : edges) {
                 // the edge exists
                 if (e.getSource().equals(source) && e.getTarget().equals(target)) {
                     // update this weight
@@ -84,16 +84,17 @@ public class ConcreteEdgesGraph implements Graph<String> {
             }
             ;
             // if we get here, weight does not currently exist
-            edges.add(new Edge(source, target, weight));
+            Edge<L> newEdge = new Edge<>(source, target, weight);
+            edges.add(newEdge);
             return 0;
         }
         // weight is zero, we need to remove this weight
         // YOU CANNOT MODIFY A COLLECTION WHILE ITERATING OVER IT
         else {
             // try to find this weight to remove
-            Iterator<Edge> iterator = edges.iterator();
+            Iterator<Edge<L>> iterator = edges.iterator();
             while (iterator.hasNext()) {
-                Edge e = iterator.next();
+                Edge<L> e = iterator.next();
                 if (e.getSource().equals(source) && e.getTarget().equals(target)) {
                     int oldWeight = e.getWeight();
                     iterator.remove();
@@ -106,7 +107,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
     @Override
-    public boolean remove(String vertex) {
+    public boolean remove(L vertex) {
         // first determine if vertex is in our set
         if (vertices.contains(vertex)) {
             // first remove vertex from the set, we can do this directly due to hashing
@@ -124,17 +125,17 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
     @Override
-    public Set<String> vertices() {
+    public Set<L> vertices() {
         // defensive copying, also note that vertices is private!
         return new HashSet<>(vertices);
     }
 
     @Override
-    public Map<String, Integer> sources(String target) {
-        Map<String, Integer> sourceMap = new HashMap<>();
+    public Map<L, Integer> sources(L target) {
+        Map<L, Integer> sourceMap = new HashMap<>();
 
         // get all the sources for this target
-        for (Edge e : edges) {
+        for (Edge<L> e : edges) {
             // found the target
             if (e.getTarget().equals(target)) {
                 sourceMap.put(e.getSource(), e.getWeight());
@@ -146,11 +147,11 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
     @Override
-    public Map<String, Integer> targets(String source) {
-        Map<String, Integer> targetMap = new HashMap<>();
+    public Map<L, Integer> targets(L source) {
+        Map<L, Integer> targetMap = new HashMap<>();
 
         // get all the sources for this target
-        for (Edge e : edges) {
+        for (Edge<L> e : edges) {
             // found the source
             if (e.getSource().equals(source)) {
                 targetMap.put(e.getTarget(), e.getWeight());
@@ -164,7 +165,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     @Override
     public String toString() {
         List<String> edgeStrings = new ArrayList<>();
-        for (Edge e : edges) {
+        for (Edge<L> e : edges) {
             edgeStrings.add(e.getSource() + "->" + e.getTarget() + "(weight=" + e.getWeight() + ")\n");
         }
         String edgesString = String.join("    ", edgeStrings);
@@ -184,11 +185,11 @@ public class ConcreteEdgesGraph implements Graph<String> {
  * we use generics here
  *
  */
-class Edge {
+class Edge<L> {
 
     // fields
-    private final String source;
-    private final String target;
+    private final L source;
+    private final L target;
     // we can reassign this weight
     private Integer weight;
 
@@ -206,7 +207,7 @@ class Edge {
     // ALL METHODS HERE ARE PACKAGE-PRIVATE (DEFAULT ACCESS)
 
     // constructor
-    Edge(String source, String target, Integer weight) {
+    Edge(L source, L target, Integer weight) {
         this.source = source;
         this.target = target;
         this.weight = weight;
@@ -219,11 +220,11 @@ class Edge {
     }
 
     // methods
-    String getSource() {
+    L getSource() {
         return source;
     }
 
-    String getTarget() {
+    L getTarget() {
         return target;
     }
 
