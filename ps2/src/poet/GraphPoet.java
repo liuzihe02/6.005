@@ -3,14 +3,15 @@
  */
 package poet;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.LinkedHashSet;
+
+import java.nio.file.Files;
 
 import graph.Graph;
 
@@ -39,7 +40,7 @@ import graph.Graph;
  * <li>("hello,") -> ("goodbye!") with weight 1
  * </ul>
  * <p>
- * where the vertices represent case-insensitive {@code "hello,"} and
+ * where the vertices represent CASE-INSENSITIVE {@code "hello,"} and
  * {@code "goodbye!"}.
  * 
  * <p>
@@ -49,7 +50,7 @@ import graph.Graph;
  * w1 -> b -> w2 is a two-edge-long path with maximum-weight weight among all
  * the two-edge-long paths from w1 to w2 in the affinity graph.
  * If there are no such paths, no bridge word is inserted.
- * In the output poem, input words retain their original case, while bridge
+ * In the output poem, INPUT WORDS RETAIN THEIR ORIGINAL CASE, while bridge
  * words are lower case. The whitespace between every word in the poem is a
  * single space.
  * 
@@ -115,21 +116,30 @@ public class GraphPoet {
     public GraphPoet(File corpus) throws IOException {
         List<String> wordList = createWordList(corpus);
         Set<String> distinctWords = new LinkedHashSet<>(wordList);
+
+        // first add all my distinct words as vertexes
+        for (String distinct : distinctWords) {
+            graph.add(distinct);
+        }
+
         // for each word - this is the parent node
         for (String referenceWord : distinctWords) {
+
             // we're gonna start adding children to each parent
             // traverse the List, up until the second to last word!
             for (int i = 0; i < wordList.size() - 1; i++) {
                 // found the refernce
                 if (wordList.get(i).equals(referenceWord)) {
-                    // if new vertex doesnt even exist in the graph
-                    if (graph.add(referenceWord)) {
-                        graph.set(referenceWord, wordList.get(i + 1), 1);
+                    // check if the nextWord we want to modify even exists in the children graph
+                    Map<String, Integer> children = graph.targets(referenceWord);
+                    String nextWord = wordList.get(i + 1);
+                    if (children.get(nextWord) == null) {
+                        // the child vertex doesnt yet exist
+                        graph.set(referenceWord, nextWord, 1);
                     }
-                    // vertex already exists in the graph, then we update the weight
+                    // child vertex already exists
                     else {
-                        int newWeight = graph.targets(referenceWord).get(wordList.get(i + 1));
-                        graph.set(referenceWord, wordList.get(i + 1), newWeight + 1);
+                        graph.set(referenceWord, nextWord, children.get(nextWord) + 1);
                     }
                 }
             }
@@ -139,27 +149,46 @@ public class GraphPoet {
     }
 
     /**
-     * creates a list of words from a File object
+     * Create a list of words from the given corpus file.
+     * 
+     * @param corpus The file containing the corpus text
+     * @return A list of words extracted from the corpus
+     * @throws IOException If there's an error reading the file
      */
     private List<String> createWordList(File corpus) throws IOException {
         List<String> words = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(corpus))) {
-            // declare line
-            String line;
-            // Read each line of the file until we reach the end (null)
-            while ((line = reader.readLine()) != null) {
-                // Split the line into words using whitespace as the delimiter
-                // `\\s+` means one or more whitespace
-                String[] lineWords = line.split("\\s+");
-                // Process each word in the line
-                for (String word : lineWords) {
-                    // Convert the word to lowercase and remove leading/trailing whitespace
-                    word = word.toLowerCase().trim();
-                    // Only add non-empty words to the set
-                    if (!word.isEmpty()) {
-                        words.add(word);
-                    }
-                }
+        // Read all lines from the file
+        List<String> lines = Files.readAllLines(corpus.toPath());
+
+        // Process each line of the file
+        for (String line : lines) {
+            // Add all words from the current line to the list; here we make them all lower
+            // case!
+            words.addAll(processText(line, true));
+        }
+        return words;
+    }
+
+    /**
+     * Process a text string into a list of words.
+     * 
+     * @param text        The input text to process
+     * @param toLowercase If true, convert all words to lowercase; if false,
+     *                    preserve original case
+     * @return A list of processed words
+     */
+    private List<String> processText(String text, boolean toLowerCase) {
+        List<String> words = new ArrayList<>();
+        // Split the text into words using whitespace as delimiter
+        String[] textWords = text.split("\\s+");
+        for (String word : textWords) {
+            // remove trailing white spaces
+            word = word.trim();
+            // decide whether to convert to lowercase
+            word = toLowerCase ? word.toLowerCase() : word;
+            // Only add non-empty words
+            if (!word.isEmpty()) {
+                words.add(word);
             }
         }
         return words;
@@ -173,11 +202,84 @@ public class GraphPoet {
      * @throws IOException
      */
     public String poem(String input) throws IOException {
-        // Create a list of words from the input
-        List<String> inputWords = createWordList(new File(input));
+        // check if empty string
+        if (input == null || input.trim().isEmpty()) {
+            return "";
+        }
+
+        // Create a list of words from the input, heep the case here!
+        List<String> inputWords = processText(input, false);
         StringBuilder poem = new StringBuilder();
+
+        // Process each pair of adjacent words
+
+        // go up to second last word
+        for (int i = 0; i < inputWords.size() - 1; i++) {
+            String currentWord = inputWords.get(i);
+            String nextWord = inputWords.get(i + 1);
+
+            // Add the current word to the poem (with original case)
+            poem.append(currentWord).append(" ");
+
+            // Find the best bridge word, source is current word, target is next word
+            // WHEN SEARCHING, we need to make it lowercase so we can compare!
+            String bridgeWord = findBestBridgeWord(currentWord.toLowerCase(), nextWord.toLowerCase());
+
+            // If a bridge word is found, add it to the poem
+            if (bridgeWord != null) {
+                poem.append(bridgeWord.toLowerCase()).append(" ");
+            }
+        }
+
+        // Add the last word; edge case!
+        poem.append(inputWords.get(inputWords.size() - 1));
+        // return this as a string object
+        return poem.toString();
     }
 
-    // TODO toString()
+    /**
+     * finds the best bridge word given current and next word.
+     * 
+     * first we loop over all the children of current words to get possible bridges.
+     * Then we loop over all the parents of next word to also find possible bridges.
+     * check if the bridges match; if they do return the best one!
+     * 
+     * @param source the current word we're considering
+     * @param target the next word we're considering
+     * @return the best bridge word between current word and next word based on the
+     *         graph
+     */
+    private String findBestBridgeWord(String source, String target) {
+        String bestBridge = null;
+        int maxWeight = 0;
+
+        // this map contains all the children (possible bridge) of the currentWord which
+        // is Source
+        Map<String, Integer> currentWordToBridgeMap = graph.targets(source);
+
+        // check all possible bridge words of this mapping
+        for (Map.Entry<String, Integer> entry : currentWordToBridgeMap.entrySet()) {
+            String bridge = entry.getKey();
+            int currentWordToBridgeWeight = entry.getValue();
+
+            // this map contains all the children (one of which may include nextWord) of the
+            // bridge that we're considering
+            Map<String, Integer> bridgeToNextWordMap = graph.targets(bridge);
+
+            Integer bridgeToNextWordWeight = bridgeToNextWordMap.get(target);
+            if (bridgeToNextWordWeight == null)
+                // go to next possible bridge word, we didnt find a match
+                continue;
+
+            // do the update
+            int totalWeight = currentWordToBridgeWeight + bridgeToNextWordWeight;
+            if (totalWeight > maxWeight) {
+                maxWeight = totalWeight;
+                bestBridge = bridge;
+            }
+        }
+
+        return bestBridge;
+    }
 
 }

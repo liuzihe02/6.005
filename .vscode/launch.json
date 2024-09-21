@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "poet.Main",
+            "projectName": "6.005_54d7c0a8"
+        },
+        {
+            "type": "java",
             "name": "RulesOf6005",
             "request": "launch",
             "mainClass": "rules.RulesOf6005",
@@ -17,7 +24,6 @@
             "request": "launch",
             "mainClass": "twitter.Main",
             "projectName": "6.005_54d7c0a8"
-        },
-
+        }
     ]
 }

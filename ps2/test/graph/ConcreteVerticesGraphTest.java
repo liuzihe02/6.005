@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -23,20 +22,16 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     private static final String vertex1 = "v1";
     private static final String vertex2 = "v2";
     private static final String vertex3 = "v3";
-    private static final String vertex4 = "v4";
-    private static final String vertex5 = "v5";
 
     private static final int weight1 = 1;
     private static final int weight2 = 2;
-    private static final int weight3 = 3;
-    private static final int weight4 = 4;
 
     /*
      * Provide a ConcreteVerticesGraph for tests in GraphInstanceTest.
      */
     @Override
     public Graph<String> emptyInstance() {
-        return new ConcreteVerticesGraph();
+        return new ConcreteVerticesGraph<>();
     }
 
     /*

@@ -29,7 +29,8 @@ public class GraphPoetTest {
     // Test with simple corpus
     @Test
     public void testSimplePoem() throws IOException {
-        GraphPoet poet = new GraphPoet(new File("test/poet/simple-corpus.txt"));
+        File testFile = new File("ps2/test/poet/simple-corpus.txt");
+        GraphPoet poet = new GraphPoet(testFile);
         String input = "This is the world poetry";
         String expected = "This is the world of poetry";
         assertEquals(expected, poet.poem(input));
@@ -38,7 +39,7 @@ public class GraphPoetTest {
     // Test with no bridge words
     @Test
     public void testNoBridgeWords() throws IOException {
-        GraphPoet poet = new GraphPoet(new File("test/poet/simple-corpus.txt"));
+        GraphPoet poet = new GraphPoet(new File("ps2/test/poet/simple-corpus.txt"));
         String input = "poetry hello";
         String expected = "poetry hello";
         assertEquals(expected, poet.poem(input));
@@ -47,7 +48,9 @@ public class GraphPoetTest {
     // Test with same weight, insertion order, choose the word that came first
     @Test
     public void testRepeatingWords() throws IOException {
-        GraphPoet poet = new GraphPoet(new File("test/poet/same-weight.txt"));
+        // GraphPoet poet = new GraphPoet(new File("ps2/test/poet/same-weight.txt"));
+        File testFile = new File("ps2/test/poet/same-weight.txt");
+        GraphPoet poet = new GraphPoet(testFile);
         String input = "the brown fox";
         String expected = "the quick brown fox";
         assertEquals(expected, poet.poem(input));
@@ -56,7 +59,7 @@ public class GraphPoetTest {
     // Test with multiple possible bridge words (choose highest weight)
     @Test
     public void testMultipleBridgeWords() throws IOException {
-        GraphPoet poet = new GraphPoet(new File("test/poet/different-weight.txt"));
+        GraphPoet poet = new GraphPoet(new File("ps2/test/poet/different-weight.txt"));
         String input = "the brown fox";
         String expected = "the slow brown fox";
         assertEquals(expected, poet.poem(input));
@@ -65,16 +68,18 @@ public class GraphPoetTest {
     // Test case sensitivity
     @Test
     public void testCaseSensitivity() throws IOException {
-        GraphPoet poet = new GraphPoet(new File("test/poet/case-sensitive.txt"));
+        GraphPoet poet = new GraphPoet(new File("ps2/test/poet/case-sensitive.txt"));
         String input = "The Sat";
-        String expected = "The Cat Sat";
+        String expected = "The cat Sat";
         assertEquals(expected, poet.poem(input));
     }
 
     // Test with empty input
     @Test
     public void testEmptyInput() throws IOException {
-        GraphPoet poet = new GraphPoet(new File("test/poet/simple-corpus.txt"));
+        // GraphPoet poet = new GraphPoet(new File("ps2/test/poet/simple-corpus.txt"));
+        File testFile = new File("ps2/test/poet/simple-corpus.txt");
+        GraphPoet poet = new GraphPoet(testFile);
         String input = "";
         String expected = "";
         assertEquals(expected, poet.poem(input));
@@ -83,7 +88,7 @@ public class GraphPoetTest {
     // Test with input not in corpus
     @Test
     public void testInputNotInCorpus() throws IOException {
-        GraphPoet poet = new GraphPoet(new File("test/poet/simple-corpus.txt"));
+        GraphPoet poet = new GraphPoet(new File("ps2/test/poet/simple-corpus.txt"));
         String input = "graph theory";
         String expected = "graph theory";
         assertEquals(expected, poet.poem(input));

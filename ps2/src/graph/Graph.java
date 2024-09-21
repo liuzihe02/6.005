@@ -76,6 +76,8 @@ public interface Graph<L> {
      * Get the source vertices with directed edges to a target vertex and the
      * weights of those edges.
      * 
+     * Builds a copy anyway, we can't modify the true graph
+     * 
      * @param target a label
      * @return a map where the key set is the set of labels of vertices such
      *         that this graph includes an edge from that vertex to target, and
@@ -87,6 +89,8 @@ public interface Graph<L> {
     /**
      * Get the target vertices with directed edges from a source vertex and the
      * weights of those edges.
+     * 
+     * Builds a copy anyway, we can't modify the true graph
      * 
      * @param source a label
      * @return a map where the key set is the set of labels of vertices such
