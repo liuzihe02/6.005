@@ -21,9 +21,9 @@ public class Main {
      * @throws IOException if a poet corpus file cannot be found or read
      */
     public static void main(String[] args) throws IOException {
-        File testFile = new File("ps2/src/poet/mugar-omni-theater.txt");
+        File testFile = new File("ps2/src/poet/nietzche.txt");
         final GraphPoet nimoy = new GraphPoet(testFile);
-        final String input = "Test the system.";
+        final String input = "Explore the nature of truth.";
         System.out.println(input + "\n>>>\n" + nimoy.poem(input));
     }
 
