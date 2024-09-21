@@ -207,12 +207,10 @@ for (initialization; termination;
 - The increment expression is invoked after each iteration through the loop; it is perfectly acceptable for this expression to increment or decrement a value.
 
 ```java
-class ForDemo {
-    public static void main(String[] args){
-         for(int i=1; i<11; i++){
-              System.out.println("Count is: " + i);
-         }
-    }
+int[] highScores = { 10, 9, 8, 11};
+for (int i = 0; i < highScores.length; i++)
+{
+    System.out.println(  highScores[i] );
 }
 ```
 

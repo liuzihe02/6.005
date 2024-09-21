@@ -4,11 +4,10 @@
 package graph;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 
 /**
@@ -97,7 +96,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
 
     @Override
     public Set<L> vertices() {
-        Set<L> labels = new HashSet<>();
+        Set<L> labels = new LinkedHashSet<>();
         for (Vertex<L> vertexObj : vertices) {
             labels.add(vertexObj.getLabel());
         }
@@ -112,7 +111,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
      * @return
      */
     public Map<L, Integer> sources(L target) {
-        Map<L, Integer> parents = new HashMap<>();
+        Map<L, Integer> parents = new LinkedHashMap<>();
 
         for (Vertex<L> sourceObj : vertices) {
             Map<L, Integer> childEdges = sourceObj.getOutEdges();
@@ -132,7 +131,7 @@ public class ConcreteVerticesGraph<L> implements Graph<L> {
             Vertex<L> sourceObj = findVertex(source);
             return sourceObj.getOutEdges();
         } else {
-            return new HashMap<>();
+            return new LinkedHashMap<>();
         }
 
     }
@@ -203,7 +202,7 @@ class Vertex<L> {
 
     // fields, L here stands for label
     private final L label;
-    // insertion order
+    // INSERTION ORDER with LinkedHashMap
     // this maps the IDENTIFIER of the childvertex to its weight
     // most important, we can directly do comparison with this identifier; hashable
     // id of v1 == id of v2
@@ -274,7 +273,7 @@ class Vertex<L> {
      * original copy
      */
     Map<L, Integer> getOutEdges() {
-        return new HashMap<>(childEdges);
+        return new LinkedHashMap<>(childEdges);
     }
 
     @Override

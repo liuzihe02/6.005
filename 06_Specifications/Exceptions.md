@@ -73,6 +73,18 @@ public class ListOfNumbers {
 ```
 The constructor initializes an output stream on a file. If the file cannot be opened, the constructor throws an `IOException`. The call to the `ArrayList` class's `get` method, which throws an `IndexOutOfBoundsException` if the value of its argument is too small or too large. If you try to *compile* the `ListOfNumbers` class, the compiler prints an error message about the exception thrown by the `FileWriter` constructor. However, it does not display an error message about the exception thrown by `get`. The reason is that the exception thrown by the constructor, `IOException`, is a checked exception, and the one thrown by the get method, IndexOutOfBoundsException, is an unchecked exception - no catch or specify requirement.
 
+This code doesn't compile because we haven't handled a checked exception `IOException`. To make it compile, we can either:
+  - Handle the potential `IOException` with a `try-catch` block
+  - Handle it by declaring the method might throw an `IOException`, essentially passing the responsibility up the call stack
+
+```java
+    public void writeList() throws IOException {
+        // The FileWriter constructor throws IOException, which must be caught.
+        PrintWriter out = new PrintWriter(new FileWriter("OutFile.txt"));
+        ...
+    }
+```
+
 As a general rule, you’ll want to use checked exceptions to signal *special results* and unchecked exceptions to signal *bugs*. So if you call `BirthdayBook` ’s `lookup` method and forget to handle the `Not­Found­Exception` , the compiler will reject your code. This is a checked exception handled with try-catch-finally. This ensures that exceptions that are expected to occur will be handled. However for an unchecked exceptions, the compiler will not check for `try - catch` or a `throws` declaration.
 
 ### Try-Catch-Finally blocks

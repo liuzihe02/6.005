@@ -4,8 +4,8 @@
 package graph;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +22,7 @@ import java.util.Iterator;
  */
 public class ConcreteEdgesGraph<L> implements Graph<L> {
 
-    private final Set<L> vertices = new HashSet<>();
+    private final Set<L> vertices = new LinkedHashSet<>();
     private final List<Edge<L>> edges = new ArrayList<>();
 
     // Abstraction function:
@@ -127,12 +127,12 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
     @Override
     public Set<L> vertices() {
         // defensive copying, also note that vertices is private!
-        return new HashSet<>(vertices);
+        return new LinkedHashSet<>(vertices);
     }
 
     @Override
     public Map<L, Integer> sources(L target) {
-        Map<L, Integer> sourceMap = new HashMap<>();
+        Map<L, Integer> sourceMap = new LinkedHashMap<>();
 
         // get all the sources for this target
         for (Edge<L> e : edges) {
@@ -148,7 +148,7 @@ public class ConcreteEdgesGraph<L> implements Graph<L> {
 
     @Override
     public Map<L, Integer> targets(L source) {
-        Map<L, Integer> targetMap = new HashMap<>();
+        Map<L, Integer> targetMap = new LinkedHashMap<>();
 
         // get all the sources for this target
         for (Edge<L> e : edges) {
