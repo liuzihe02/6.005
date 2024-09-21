@@ -8,7 +8,9 @@
         "ps1/test",
         "ps2/src",
         "ps2/test",
-        "18_Parsers/src"
+        "18_Parsers/src",
+        "ps3/src",
+        "ps3/test"
     ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
