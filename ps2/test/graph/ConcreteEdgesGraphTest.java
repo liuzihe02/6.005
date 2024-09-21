@@ -5,7 +5,6 @@ package graph;
 
 import static org.junit.Assert.*;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,7 +29,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
      */
     @Override
     public Graph<String> emptyInstance() {
-        return new ConcreteEdgesGraph();
+        return new ConcreteEdgesGraph<>();
     }
 
     /*
@@ -103,7 +102,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     // test getters
     @Test
     public void testGet() {
-        Edge edge = new Edge(vertex1, vertex2, weight1);
+        Edge<String> edge = new Edge<>(vertex1, vertex2, weight1);
 
         assertEquals("expected string 'v2'", edge.getTarget(), "v2");
         assertEquals("expected string 'v1'", edge.getSource(), "v1");
@@ -113,7 +112,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     // test toString
     @Test
     public void testToString() {
-        Edge edge = new Edge(vertex1, vertex2, weight1);
+        Edge<String> edge = new Edge<>(vertex1, vertex2, weight1);
         String expected = "v1->v2(weight=1)";
 
         assertEquals("expected string", expected, edge.toString());

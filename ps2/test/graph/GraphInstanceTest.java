@@ -15,6 +15,10 @@ import org.junit.Test;
 /**
  * Tests for INSTANCE methods of Graph.
  * 
+ * this is an abstract class that will be inherited by the concrete
+ * implementations
+ * abstract classes cannot be instantiated, and must be inherited
+ * 
  * <p>
  * PS2 instructions: you MUST NOT add constructors, fields, or non-@Test
  * methods to this class, or change the spec of {@link #emptyInstance()}.
@@ -65,7 +69,7 @@ public abstract class GraphInstanceTest {
     private static final int weight2 = 2;
 
     /**
-     * Overridden by implementation-specific test classes.
+     * OVERRIDDEN by implementation-specific test classes.
      * 
      * @return a new empty graph of the particular implementation being tested
      */

@@ -35,4 +35,32 @@ public class GraphStaticTest {
 
     // TODO test other vertex label types in Problem 3.2
 
+    // Testing strategy
+    // empty()
+    // no inputs, only output is empty graph
+    // observe with vertices()
+
+    @Test
+    public void testInteger() {
+        Graph<Integer> graph = Graph.empty();
+
+        assertTrue("expected True, added vertex to the graph", graph.add(1));
+        assertTrue("expected graph size 1", graph.vertices().size() == 1);
+        assertTrue("expected graph to contain the vertex", graph.vertices().contains(1));
+        assertTrue("expected True, vertex in the Graph", graph.remove(1));
+        assertTrue("expected empty graph", graph.vertices().size() == 0);
+
+    }
+
+    @Test
+    public void testDouble() {
+        Graph<Double> graph = Graph.empty();
+
+        assertTrue("expected True, added vertex to the graph", graph.add(1.0));
+        assertTrue("expected graph size 1", graph.vertices().size() == 1);
+        assertTrue("expected graph to contain the vertex", graph.vertices().contains(1.0));
+        assertTrue("expected True, vertex in the Graph", graph.remove(1.0));
+        assertTrue("expected empty graph", graph.vertices().size() == 0);
+
+    }
 }

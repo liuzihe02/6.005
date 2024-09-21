@@ -21,13 +21,13 @@ import java.util.Set;
 public interface Graph<L> {
 
     /**
-     * Create an empty graph.
-     * 
+     * Create an empty graph. static method
+     *
      * @param <L> type of vertex labels in the graph, must be immutable
      * @return a new empty weighted directed graph
      */
     public static <L> Graph<L> empty() {
-        throw new RuntimeException("not implemented");
+        return new ConcreteEdgesGraph<L>();
     }
 
     /**
