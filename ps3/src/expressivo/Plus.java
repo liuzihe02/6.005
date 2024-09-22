@@ -65,4 +65,10 @@ public class Plus implements Expression {
         return 2 * this.left.hashCode() + this.right.hashCode();
     }
 
+    @Override
+    public Expression differentiate(Variable V) {
+        //differentiate wrt each and return the Plus object
+        return new Plus(left.differentiate(V), right.differentiate(V));
+    }
+
 }

@@ -21,6 +21,8 @@ import expressivo.parser.ExpressionParser;
  * nonnegative integers and floating-point numbers
  * variables (case-sensitive nonempty strings of letters)
  * 
+ * We implement differentiation and simplification. The recursive datatype makes this so simple, just like backprop!
+ * 
  * <p>
  * PS3 instructions: this is a required ADT interface.
  * You MUST NOT change its name or package or the names or type signatures of
@@ -131,14 +133,11 @@ public interface Expression {
 
     // More instance methods
 
-    // /**
-    //  * static method
-    //  * Check if this expression is a Number expression
-    //  * 
-    //  * @return true iff this expression is a Number
-    //  */
-    // public static boolean isNumber(Expression E) {
-    //     // TODO:
-    // };
+    /**
+     * differentiates this Expression with respect to the variable
+     * @param V must be of type Variable
+     * @return
+     */
+    public Expression differentiate(Variable V);
 
 }

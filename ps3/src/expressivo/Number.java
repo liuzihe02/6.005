@@ -73,4 +73,9 @@ public class Number implements Expression {
         return this.value;
     }
 
+    @Override
+    public Expression differentiate(Variable V) {
+        return new Number(0.0);
+    }
+
 }

@@ -119,6 +119,8 @@ We traverse the parse tree with `ParseTreeWalker`, which is an Antlr class that 
 
 In `Main.java` we see the class `PrintEverything` that implements `IntegerExpressionListener` and basically prints a statement each time we enter and exit a node.
 
+This `Listener` object allows us to do operations on each node as we traverse the tree, hence we can use this structure to create useful things like the addition calculator in `MakeIntegerExpression` subtype of `Listener`, or do differentiation in `ps3`!
+
 ```java
 class PrintEverything implements IntegerExpressionListener {
 

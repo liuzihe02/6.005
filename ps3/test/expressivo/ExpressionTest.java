@@ -360,49 +360,52 @@ public class ExpressionTest {
 
     // covers Number = 1
     @Test
-    @Ignore
     public void testDifferentiateNumber() {
         Expression e = new Number(1.0);
         Expression d = new Number(0.0);
 
-        assertEquals("Expected derivative 0", e.differentiate("x"), d);
+        Variable x = new Variable("x");
+        assertEquals("Expected derivative 0", e.differentiate(x), d);
     }
 
     // covers Variable = 1
     //        diff var = present/not present
     @Test
-    @Ignore
     public void testDifferentiateVariable() {
         Expression e1 = new Variable("x");
         Expression e2 = new Variable("y");
         Expression d1 = new Number(1.0);
         Expression d2 = new Number(0.0);
 
-        assertEquals("Expected derivative 0", e1.differentiate("x"), d1);
-        assertEquals("Expected derivative 1", e2.differentiate("x"), d2);
+        Variable x = new Variable("x");
+
+        assertEquals("Expected derivative 0", e1.differentiate(x), d1);
+        assertEquals("Expected derivative 1", e2.differentiate(x), d2);
     }
 
     // covers Plus
     //        Number >1
     @Test
-    @Ignore
     public void testDifferentiatePlus() {
         Expression e = new Plus(new Number(1.0), new Number(1.0));
         Expression d = new Plus(new Number(0.0), new Number(0.0));
 
-        assertEquals("Expected derivative 0.0+0.0", e.differentiate("x"), d);
+        Variable x = new Variable("x");
+
+        assertEquals("Expected derivative 0.0+0.0", e.differentiate(x), d);
     }
 
     // covers Times
     //        Variable >1
     @Test
-    @Ignore
     public void testDifferentiateTimes() {
+
         Expression e = new Times(new Variable("x"), new Variable("x"));
         Expression d = new Plus(new Times(new Variable("x"), new Number(1.0)),
                 new Times(new Variable("x"), new Number(1.0)));
 
-        assertEquals("Expected derivative x*1+x*1", e.differentiate("x"), d);
+        Variable x = new Variable("x");
+        assertEquals("Expected derivative x*1+x*1", e.differentiate(x), d);
     }
 
     // tests for simplify()

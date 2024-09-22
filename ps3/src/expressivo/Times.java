@@ -57,7 +57,18 @@ public class Times implements Expression {
     @Override
     public int hashCode() {
         //just add the two hash codes together
-        return 2 * this.left.hashCode() + this.right.hashCode();
+        return 2 * left.hashCode() + right.hashCode();
+    }
+
+    @Override
+    public Expression differentiate(Variable V) {
+        //differentiate wrt each and return the chain rule object
+        Expression d_left_d_V = left.differentiate(V);
+        Expression d_right_d_V = right.differentiate(V);
+
+        return new Plus(
+                new Times(right, d_left_d_V),
+                new Times(left, d_right_d_V));
     }
 
 }

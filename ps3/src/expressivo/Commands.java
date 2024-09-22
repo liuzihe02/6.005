@@ -14,7 +14,7 @@ import java.util.Map;
  * You may, however, add additional static methods, or strengthen the specs of existing methods.
  */
 public class Commands {
-    
+
     /**
      * Differentiate an expression with respect to a variable.
      * @param expression the expression to differentiate
@@ -24,9 +24,12 @@ public class Commands {
      * @throws IllegalArgumentException if the expression or variable is invalid
      */
     public static String differentiate(String expression, String variable) {
-        throw new RuntimeException("unimplemented");
+        Expression expr = Expression.parse(expression);
+        Variable V = new Variable(variable);
+        Expression result = expr.differentiate(V);
+        return result.toString();
     }
-    
+
     /**
      * Simplify an expression.
      * @param expression the expression to simplify
@@ -39,8 +42,8 @@ public class Commands {
      *         Additional simplifications to the expression may be done at the implementor's discretion.
      * @throws IllegalArgumentException if the expression is invalid
      */
-    public static String simplify(String expression, Map<String,Double> environment) {
+    public static String simplify(String expression, Map<String, Double> environment) {
         throw new RuntimeException("unimplemented");
     }
-    
+
 }

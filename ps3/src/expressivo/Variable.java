@@ -56,4 +56,14 @@ public class Variable implements Expression {
         return this.name.hashCode();
     }
 
+    //implement partial derivative rules
+    @Override
+    public Expression differentiate(Variable V) {
+        if (this.equals(V)) {
+            return new Number(1.0);
+        } else {
+            return new Number(0.0);
+        }
+    }
+
 }
