@@ -4,7 +4,6 @@
 package expressivo;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 import java.util.HashMap;
 import java.util.Map;

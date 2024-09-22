@@ -2,7 +2,6 @@
 package expressivo;
 
 import java.util.Map;
-import java.util.Iterator;
 
 /**
  * An immutable data type representing a variable
