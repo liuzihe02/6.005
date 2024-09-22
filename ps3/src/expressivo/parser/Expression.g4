@@ -29,10 +29,32 @@ import Configuration;
  * For more information, see reading 18 about parser generators, which explains
  * how to use Antlr and has links to reference information.
  */
+
+//parser rules
+//note we always have sum of products, the highest level will be a sum of terms
+
 root : sum EOF;
-sum : primitive ('+' primitive)*;
-primitive : NUMBER | '(' sum ')';
-NUMBER : [0-9]+;
+
+// the fact that additive contains multiplicative is reflective of the order of operations
+sum : product ('+' product)*;
+product : primitive ('*' primitive)*;
+
+// the primary rules also allow expressions!
+primitive : NUMBER
+        | VARIABLE
+        | '(' sum ')';
+
+// Lexer Rules
+
+NUMBER :
+        //integer like 123 456 OR decimal like 123.09 or 123.02
+        [0-9]+ ('.'[0-9]+)?
+        //allow .0123
+        | '.'[0-9]+
+        //allow 123.
+        | [0-9]+'.'
+        ;
+VARIABLE : [a-zA-Z]+;
 
 /* Tell Antlr to ignore spaces around tokens. */
 SPACES : [ ]+ -> skip;

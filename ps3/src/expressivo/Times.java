@@ -7,6 +7,7 @@ package expressivo;
  * only simplify and differentiate has stuff related the * operator
  * 
  * note that structural equality means that 1*x is not the same as x*1 even though they are mathematically equivalent
+ * also (1*(x*1)) not the same as ((1*x)*1) due to the grouping condition
  * 
  */
 public class Times implements Expression {

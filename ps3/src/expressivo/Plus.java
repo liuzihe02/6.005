@@ -7,6 +7,7 @@ package expressivo;
  * 
  * order matters! so 1+2 is not the same as 2+1
  * structural equality requires the same order and same grouping
+ * also (1+(x+1)) not the same as ((1+x)+1) due to the grouping condition
  * 
  */
 public class Plus implements Expression {

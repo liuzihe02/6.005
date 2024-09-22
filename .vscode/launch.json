@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
+            "mainClass": "expressivo.Main",
+            "projectName": "6.005_54d7c0a8"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
             "mainClass": "intexpr.Main",
             "projectName": "6.005_54d7c0a8"
         },

@@ -41,7 +41,8 @@ public class Variable implements Expression {
             return false;
         } else {
             Variable that = (Variable) thatObject;
-            return this.name == that.name;
+            // string is an object, not a primitive type; must use equals comparioson!
+            return this.name.equals(that.name);
         }
     }
 

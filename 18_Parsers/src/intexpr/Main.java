@@ -21,7 +21,7 @@ import intexpr.parser.IntegerExpressionParser;
 public class Main {
 
     public static void main(String[] args) {
-        String input = "54+(2+90)";
+        String input = "54+((2+90)+30+49)";
         IntegerExpression expr = parse(input);
         int value = expr.value();
         System.out.println(input + "=" + expr + "=" + value);
@@ -185,39 +185,77 @@ class MakeIntegerExpression implements IntegerExpressionListener {
     @Override
     public void exitSum(IntegerExpressionParser.SumContext context) {
         // matched the primitive ('+' primitive)* rule
+        // get the number of primitives in this sum operation
         List<IntegerExpressionParser.PrimitiveContext> addends = context.primitive();
         assert stack.size() >= addends.size();
 
         // the pattern above always has at least 1 child;
         // pop the last child
         assert addends.size() > 0;
+
+        System.err.println("===START SPECIAL SUM EXIT===");
+        System.err.println("Special sum exit. current stack is " + stack.toString());
+
         IntegerExpression sum = stack.pop();
+
+        System.err.println("Special sum exit. just removed " + sum.toString());
+        System.err.println("Special sum exit. current stack is " + stack.toString());
 
         // pop the older children, one by one, and add them on
         for (int i = 1; i < addends.size(); ++i) {
             sum = new Plus(stack.pop(), sum);
+            System.err.println("Special sum exit. New Plus object created with value " + sum.toString());
         }
+
+        System.err.println("Special sum exit. current stack is " + stack.toString());
 
         // the result is this subtree's IntegerExpression
         stack.push(sum);
+
+        System.err.println("Special sum exit. adding Plus object " + sum.toString());
+        System.err.println("Special sum exit. current stack is " + stack.toString());
+        System.err.println("===END SPECIAL SUM EXIT===");
+
     }
 
     @Override
     public void exitPrimitive(IntegerExpressionParser.PrimitiveContext context) {
         if (context.NUMBER() != null) {
+            //basically if i meet a number, add it to the stack
+
             // matched the NUMBER alternative
             int n = Integer.valueOf(context.NUMBER().getText());
             IntegerExpression number = new Number(n);
+
+            //more details
+            System.err.println("===START SPECIAL PRIMITIVE EXIT===");
+            System.err.println("current stack is " + stack.toString());
+            System.err.println("Adding Number: " + number.toString());
+
             stack.push(number);
+
+            System.err.println("current stack is " + stack.toString());
+            System.err.println("===END SPECIAL PRIMITIVE EXIT===");
+
         } else {
             // matched the '(' sum ')' alternative
             // do nothing, because sum's value is already on the stack
+
+            //this is what we mean by dont make the () concrete but rather its represented in the structure
+
+            // more details
+            System.err.println("===START SPECIAL PRIMITIVE EXIT===");
+            System.err.println("Special primitive exit. brackets: " + "current stack is" + stack.toString());
+            System.err.println("===END SPECIAL PRIMITIVE EXIT===");
         }
+        ;
+
     }
 
     // don't need these here, so just make them empty implementations
     @Override
     public void enterRoot(IntegerExpressionParser.RootContext context) {
+        System.err.println("=======START======");
     }
 
     @Override

@@ -30,7 +30,9 @@ public class ExpressionTest {
     //      # of Variable = 1, >1 
     //      Variable case-sensitivity
     //      # of Plus = 1, >1
-    //      Plus - order, grouping
+    //      Plus - order, grouping 
+    //              - order: swaps are not equal;
+    //                 - grouping: different grouping are also not equal
     //      # of Times = 1, >1 
     //      Times - order, grouping
     //
