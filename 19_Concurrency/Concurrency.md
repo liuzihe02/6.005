@@ -71,6 +71,34 @@ public class HelloRunnable implements Runnable {
 
 > An alternative is to subclass `Thread` by extending it and starting it immediately. Do not ever do this!
 
+### Anonymous classes
+
+We use anonymous class to create our `Runnable` objects sometimes. Anonymous classes allow you to declare and instantiate a class in one step, without naming it. Used for quick one-off implementations of interfaces.
+
+Instead of
+```java
+public class Greeter implements Runnable {
+    public void run() {
+        System.out.println("Hello!");
+    }
+}
+
+// Usage
+new Thread(new Greeter()).start();
+```
+
+we can do
+
+```java
+new Thread(new Runnable() {
+    public void run() {
+        System.out.println("Hello!");
+    }
+}).start();
+```
+
+
+
 
 ## Shared Memory Example
 
@@ -138,7 +166,7 @@ The balance is now 1 – A’s dollar was lost! A and B both read the balance at
 
 ### Race Condition
 
-The above illustrates a **race condition**. A race condition means that the correctness of the program (the satisfaction of postconditions/invariants) depends on the relative timing of events in concurrent computations A and B. When this happens, we say “A is in a race with B.”
+The above illustrates a **race condition**. A race condition means that the correctness of the program (the satisfaction of postconditions/invariants) depends on the relative timing of events in concurrent computations A and B. When this happens, we say “A is in a race with B.”.
 
 Some interleaving is OK, but some will produce wrong answers, violating postconditions and rep invariants.
 
