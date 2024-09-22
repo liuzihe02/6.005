@@ -413,10 +413,9 @@ public class ExpressionTest {
     // covers Number = 1
     //        env = 1
     @Test
-    @Ignore
     public void testSimplifyNumber() {
-        Map<String, Double> env = new HashMap<>();
-        env.put("x", 10.0);
+        Map<Variable, Number> env = new HashMap<>();
+        env.put(new Variable("x"), new Number(10.0));
         Expression e = new Number(1.0);
         Expression s = new Number(1.0);
 
@@ -427,9 +426,8 @@ public class ExpressionTest {
     //        not present in env
     //        env = 0
     @Test
-    @Ignore
     public void testSimplifyVariable() {
-        Map<String, Double> env = new HashMap<>();
+        Map<Variable, Number> env = new HashMap<>();
         Expression e = new Variable("x");
         Expression s = new Variable("x");
 
@@ -439,9 +437,8 @@ public class ExpressionTest {
     // covers Plus
     //        Number > 1
     @Test
-    @Ignore
     public void testSimplifyPlus() {
-        Map<String, Double> env = new HashMap<>();
+        Map<Variable, Number> env = new HashMap<>();
         Expression e = new Plus(new Number(1.0), new Number(2.0));
         Expression s = new Number(3.0);
 
@@ -453,11 +450,10 @@ public class ExpressionTest {
     //        env >1
     //        present in env
     @Test
-    @Ignore
     public void testSimplifyTimes() {
-        Map<String, Double> env = new HashMap<>();
-        env.put("x", 10.0);
-        env.put("y", 2.0);
+        Map<Variable, Number> env = new HashMap<>();
+        env.put(new Variable("x"), new Number(10.0));
+        env.put(new Variable("y"), new Number(2.0));
         Expression e = new Times(new Variable("x"), new Variable("y"));
         Expression s = new Number(20.0);
 

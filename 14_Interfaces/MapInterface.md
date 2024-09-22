@@ -58,9 +58,11 @@ and with an `Iterator`:
 ```java
 // Filter a map based on some 
 // property of its keys.
-for (Iterator<Type> it = m.keySet().iterator(); it.hasNext(); )
-    if (it.next().isBogus())
+for (Iterator<Type> it = m.keySet().iterator(); it.hasNext(); ){
+    if (it.next().isBogus()){
         it.remove();
+    }
+}
 ```
 
 ## Implementations

@@ -1,6 +1,8 @@
 
 package expressivo;
 
+import java.util.Map;
+
 /**
  * An immutable data type representing the result of an addition operation
  * only simplify and differentiate have methods related to the + operator
@@ -70,5 +72,30 @@ public class Plus implements Expression {
         //differentiate wrt each and return the Plus object
         return new Plus(left.differentiate(V), right.differentiate(V));
     }
+
+    @Override
+    public Expression simplify(Map<Variable, Number> environment) {
+        //this simplification is for variable substitution
+        Expression leftSimpl = left.simplify(environment);
+        Expression rightSimpl = right.simplify(environment);
+
+        //this is for evaluation! we use the functionality of + here
+        if (leftSimpl.isNumber() && rightSimpl.isNumber()) {
+            // typecast both leftSimpl and rightSimpl in this branch
+            return new Number(
+                    ((Number) leftSimpl).getValue()
+                            //actually use the + functionality here
+                            +
+                            ((Number) rightSimpl).getValue());
+        } else {
+            return new Plus(leftSimpl, rightSimpl);
+        }
+
+    };
+
+    @Override
+    public boolean isNumber() {
+        return false;
+    };
 
 }

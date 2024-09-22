@@ -1,6 +1,9 @@
 
 package expressivo;
 
+import java.util.Map;
+import java.util.Iterator;
+
 /**
  * An immutable data type representing a variable
  * 
@@ -24,6 +27,7 @@ public class Variable implements Expression {
         assert !name.matches(".*\\s.*");
     }
 
+    //only check rep after construction
     public Variable(String name) {
         this.name = name;
         checkRep();
@@ -65,5 +69,24 @@ public class Variable implements Expression {
             return new Number(0.0);
         }
     }
+
+    @Override
+    public Expression simplify(Map<Variable, Number> environment) {
+        for (Map.Entry<Variable, Number> e : environment.entrySet()) {
+            //variable matches!
+            if (this.equals(e.getKey())) {
+                //return the number
+                return e.getValue();
+            }
+        }
+        ;
+        //did not find a matching variable
+        return this;
+    };
+
+    @Override
+    public boolean isNumber() {
+        return false;
+    };
 
 }

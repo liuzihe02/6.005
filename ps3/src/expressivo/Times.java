@@ -1,6 +1,8 @@
 
 package expressivo;
 
+import java.util.Map;
+
 /**
  * An immutable data type representing the result of an multiplication (times) operation
  * basically the same as Plus
@@ -67,8 +69,34 @@ public class Times implements Expression {
         Expression d_right_d_V = right.differentiate(V);
 
         return new Plus(
+                //give the right first; note this order
                 new Times(right, d_left_d_V),
                 new Times(left, d_right_d_V));
-    }
+    };
+
+    @Override
+    public Expression simplify(Map<Variable, Number> environment) {
+        //this simplification is for variable substitution
+        Expression leftSimpl = left.simplify(environment);
+        Expression rightSimpl = right.simplify(environment);
+
+        //this is for evaluation! we use the functionality of * here
+        if (leftSimpl.isNumber() && rightSimpl.isNumber()) {
+            // typecast both leftSimpl and rightSimpl in this branch
+            return new Number(
+                    ((Number) leftSimpl).getValue()
+                            //actually use the * functionality here
+                            *
+                            ((Number) rightSimpl).getValue());
+        } else {
+            return new Times(leftSimpl, rightSimpl);
+        }
+
+    };
+
+    @Override
+    public boolean isNumber() {
+        return false;
+    };
 
 }

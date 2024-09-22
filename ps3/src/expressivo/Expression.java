@@ -3,6 +3,8 @@
  */
 package expressivo;
 
+import java.util.Map;
+
 import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -139,5 +141,30 @@ public interface Expression {
      * @return
      */
     public Expression differentiate(Variable V);
+
+    /** simplifies an expression by substituting in values and evaluating it
+     * 
+     * each variable and number is distinct!
+     * 
+     * The only required simplification is that if the substituted polynomial is a constant expression,
+     * with no variables remaining, then simplification must reduce it to a single number, with no operators remaining either.
+     * 
+     * Simplification for substituted polynomials that still contain variables is underdetermined, left to the implementer’s discretion.
+     * it's still quite messy in our implementation!
+     * 
+     * @param environment all the values for each of the variable we want to substitute with
+     * @return
+     */
+    public Expression simplify(Map<Variable, Number> environment);
+
+    // HELPER FUNCTIONS
+
+    /**
+    * Check if this expression is a Number expression.
+    * the point of this is actually to check before we use the getValue method
+    * 
+    * @return true iff this expression is a Number
+    */
+    public boolean isNumber();
 
 }

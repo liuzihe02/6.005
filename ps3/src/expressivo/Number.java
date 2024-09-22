@@ -1,6 +1,8 @@
 
 package expressivo;
 
+import java.util.Map;
+
 /**
  * An immutable data type representing a number
  * 
@@ -25,7 +27,7 @@ public class Number implements Expression {
     }
 
     /**
-     * Make a Number
+     * Make a Number, then check rep. Since this object is not mutable; we only need to check rep at construction.
      * 
      * @param n value of a Number
      */
@@ -62,20 +64,32 @@ public class Number implements Expression {
         return this.getValue().hashCode();
     };
 
-    // More instance methods
+    // More instance methods, those with override are in the interface
+
+    @Override
+    public Expression differentiate(Variable V) {
+        return new Number(0.0);
+    }
+
+    @Override
+    public Expression simplify(Map<Variable, Number> environment) {
+        // a number is already in its simplest form! no need to do anything special
+        return this;
+    };
+
+    @Override
+    public boolean isNumber() {
+        return true;
+    };
 
     /**
-     * Get value of this expression. This method is only for numbers!
+     * Get value of this expression. This method is ONLY FOR NUMBERS!
+     * only numbers have values
      * 
      * @return value of this expression, it must be a Number expression
      */
     public Double getValue() {
         return this.value;
-    }
-
-    @Override
-    public Expression differentiate(Variable V) {
-        return new Number(0.0);
     }
 
 }

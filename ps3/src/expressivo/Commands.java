@@ -4,6 +4,7 @@
 package expressivo;
 
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * String-based commands provided by the expression system.
@@ -23,7 +24,8 @@ public class Commands {
      *         to the derivative, but doesn't need to be in simplest or canonical form.
      * @throws IllegalArgumentException if the expression or variable is invalid
      */
-    public static String differentiate(String expression, String variable) {
+    public static String differentiate(String expression, String variable) throws IllegalArgumentException {
+
         Expression expr = Expression.parse(expression);
         Variable V = new Variable(variable);
         Expression result = expr.differentiate(V);
@@ -43,7 +45,20 @@ public class Commands {
      * @throws IllegalArgumentException if the expression is invalid
      */
     public static String simplify(String expression, Map<String, Double> environment) {
-        throw new RuntimeException("unimplemented");
+        Expression expr = Expression.parse(expression);
+
+        Map<Variable, Number> realEnvironment = new HashMap<>();
+
+        //create the valid dict
+        for (Map.Entry<String, Double> e : environment.entrySet()) {
+            realEnvironment.put(
+                    new Variable(e.getKey()),
+                    new Number(e.getValue()));
+        }
+        ;
+
+        Expression result = expr.simplify(realEnvironment);
+        return result.toString();
     }
 
 }
