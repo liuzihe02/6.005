@@ -128,6 +128,22 @@ public void writeList() {
 
 The `try` block should contain the code where it might possibly raise an exception. The `catch` blocks must take in an object of `ExceptionType` inheriting from a specific class, referring to it with a name like `e`. Note a single `catch` block can also handle multiple exceptions like `catch (IOException|SQLException ex)`. The `finally` block *always* executes when the `try` block exits, usualy containing cleanup code.
 
+#### Try-with-statements
+
+```
+try (
+    // create new objects here that require cleanup after being used,
+    // and assign them to variables
+) {
+    // code here runs with those variables; this is the main block
+    // cleanup happens automatically after the code completes
+} catch(...) {
+    // you can include catch clauses if the code might throw exceptions
+}
+```
+
+
+
 ### Throw statement
 
 ```java
