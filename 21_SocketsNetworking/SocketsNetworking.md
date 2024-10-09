@@ -101,8 +101,36 @@ Refer to `Sockets.md`
 
 ## Wire Protocols
 
-A **protocol** is a set of messages that can be exchanged by two communicating parties. A **wire protocol** in particular is a set of messages represented as byte sequences, like hello world and bye (assuming we’ve agreed on a way to encode those characters into bytes).
+A **protocol** is a set of messages that can be exchanged by two communicating parties. A **wire protocol** in particular is a set of messages represented as byte sequences. Wire protocols include:
 
+- HTTP (Hypertext Transfer Protocol) for web browsing
+- SMTP (Simple Mail Transfer Protocol) for email
+- FTP (File Transfer Protocol) for file transfers
+- TCP (Transmission Control Protocol) for reliable data transmission
 
 ### HTTP
+
+```shell
+$ telnet www.eecs.mit.edu 80
+Trying 18.62.0.96...
+Connected to eecsweb.mit.edu.
+Escape character is '^]'.
+GET /↵
+<!DOCTYPE html>
+... lots of output ...
+<title>Homepage | MIT EECS</title>
+... lots more output ...
+```
+
+The `GET` command gets a web page. The `/` is the path of the page you want on the site. So this command fetches the page at `http://www.eecs.mit.edu:80/` . Since 80 is the default port for HTTP, this is equivalent to visiting http://www.eecs.mit.edu/ in your web browser. The result is HTML code that your browser renders to display the EECS homepage.
+
+## Testing client/server code
+
+### Separate network code from data structures and algorithms
+Most of the ADTs in your client/server program don’t need to rely on networking. Make sure you specify, test, and implement them as separate components that are safe from bugs, easy to understand, and ready for change — in part because they don’t involve any networking code.
+
+If those ADTs will need to be used concurrently from multiple threads (for example, threads handling different client connections), refer to queues and message passing. Otherwise, use the thread safety strategies of confinement, immutability, and existing threadsafe data types.
+
+### Separate socket code from stream code
+A function or module that needs to read from and write to a socket may only need access to the input/output streams, not to the socket itself. This design allows you to test the module by connecting it to streams that don’t come from a socket.
 
