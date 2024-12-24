@@ -8,6 +8,7 @@ Course notes and assignments fro MIT 6.005 Software Construction (Spring 2016). 
   - I have manually moved all `.jar` files to the master `lib` folder
   - If JUnit cannot find the tests, make sure the other tests have valid types and return types, methods too. Don't ignore these other highlighting errors! They may be the reason why another test isnt working
   - You can run tests with coverage to see how good your test cases are; how many lines of code are actually tested
+  - Make sure the `lib` folder contains all the required packages
   - Sometimes you might not be able to import the right packages because you didnt set the right classpath. If you have many projects, it may be better to set the classpath each time separately for each project. Setting it explicitly can allow the compiler to find the correct packages:
 
 ```java
