@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Deadlock",
-            "request": "launch",
-            "mainClass": "Deadlock",
-            "projectName": "6.005_a2d004dd"
-        },
-        {
-            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "intexpr.Main",

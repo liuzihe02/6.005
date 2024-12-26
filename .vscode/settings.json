@@ -3,6 +3,7 @@
     "java.debug.settings.onBuildFailureProceed": true,
     // this tells java to look for source files in this directory too, not just only in 'src'!
     "java.project.sourcePaths": [
+        "ps4/test",
         "ps3/test",
         "ps3/src",
         "ps2/test",
@@ -11,8 +12,7 @@
         "ps1/src",
         "ps0/src",
         "18_Parsers/src",
-        "ps4/src",
-        "ps4/test"
+        "ps4/src"
     ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",

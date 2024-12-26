@@ -1,5 +1,5 @@
 # 6.005
-Course notes and assignments fro MIT 6.005 Software Construction (Spring 2016). We take markdown notes in the numbered folders and do our problem set assignments in `ps0`,`ps1` etc.
+Course notes and assignments from MIT 6.005 Software Construction (Spring 2016). We take markdown notes in the numbered folders and do our problem set assignments in `ps0`,`ps1` etc.
 
 Accessible via MIT's OCW [page](https://ocw.mit.edu/ans7870/6/6.005/s16/)
 
@@ -23,6 +23,7 @@ java -cp ps2/src poet.Main
   - Make sure to add both new `src` and `test` files to the source paths
 - If you use VS Code to run your java files, VS Code will look at `launch.json`
   - The problem is probably here
+  - If you notice the packages arent' being recognized by VSCode, try the command "Java: Clean Java Language Server Workspace"
 
 ### Packages Used
 ```
