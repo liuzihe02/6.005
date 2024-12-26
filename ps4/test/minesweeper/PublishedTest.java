@@ -23,6 +23,8 @@ import minesweeper.server.MinesweeperServer;
 
 /**
  * Tests basic LOOK and DIG commands and X,Y directions.
+ * 
+ * for single client thread only
  */
 public class PublishedTest {
 
@@ -51,8 +53,8 @@ public class PublishedTest {
             throw new IOException("Invalid URL " + boardURL, urise);
         }
         final String[] args = new String[] {
-                "--debug",
-                "--port", Integer.toString(PORT),
+                "--debug", // in debug mode
+                "--port", Integer.toString(PORT), //uses the PORT defined at the start
                 "--file", boardPath
         };
         Thread serverThread = new Thread(() -> MinesweeperServer.main(args));
@@ -62,18 +64,20 @@ public class PublishedTest {
 
     /**
      * Connect to a MinesweeperServer and return the connected socket.
-     * @param server abort connection attempts if the server thread dies
-     * @return socket connected to the server
+     * @param server abort connection attempts if the server thread dies. takes in the server thread
+     * @return client socket connected to the serverSocket
      * @throws IOException if the connection fails
      */
     private static Socket connectToMinesweeperServer(Thread server) throws IOException {
         int attempts = 0;
         while (true) {
             try {
+                // the port will start a SINGLE new client thread
                 Socket socket = new Socket(LOCALHOST, PORT);
                 socket.setSoTimeout(3000);
                 return socket;
             } catch (ConnectException ce) {
+                //check if the server thread is fine
                 if (!server.isAlive()) {
                     throw new IOException("Server thread not running");
                 }
@@ -91,8 +95,10 @@ public class PublishedTest {
     @Test(timeout = 10000)
     public void publishedTest() throws IOException {
 
+        //create 
         Thread thread = startMinesweeperServer("board_file_5");
 
+        //client socket, using a random port
         Socket socket = connectToMinesweeperServer(thread);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -100,6 +106,7 @@ public class PublishedTest {
 
         assertTrue("expected HELLO message", in.readLine().startsWith("Welcome"));
 
+        //send some output to the client
         out.println("look");
         assertEquals("- - - - - - -", in.readLine());
         assertEquals("- - - - - - -", in.readLine());

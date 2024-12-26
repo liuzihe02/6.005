@@ -29,7 +29,13 @@ public class MinesweeperServer {
     /** True if the server should *not* disconnect a client after a BOOM message. */
     private final boolean debug;
 
-    // TODO: Abstraction function, rep invariant, rep exposure
+    // Abstraction function:
+    //   static variables and methods represent a minesweeper server with a board
+    //   instance variables and methods represent a thread serving a client user
+    // Rep invariant:
+    //   none
+    // Safety from rep exposure:
+    //   board and players are never returned, and are declared as private
 
     /**
      * Make a MinesweeperServer that listens for connections on port.
@@ -39,8 +45,11 @@ public class MinesweeperServer {
      * @throws IOException if an error occurs opening the server socket
      */
     public MinesweeperServer(int port, boolean debug) throws IOException {
-        serverSocket = new ServerSocket(port);
+        //Java class
+        this.serverSocket = new ServerSocket(port);
         this.debug = debug;
+        //try starting the server
+        serve();
     }
 
     /**
@@ -49,20 +58,51 @@ public class MinesweeperServer {
      * 
      * @throws IOException if the main server socket is broken
      *                     (IOExceptions from individual clients do *not* terminate serve())
+     * 
+     * 
+     * 
+    TIMELINE:
+    
+    Main Thread          Client Thread 1        Client Thread 2
+    -------------        --------------        --------------
+    accept() -> wait
+    client1 connects
+    spawn Thread1        START
+    accept() -> wait     handle client1...
+    client2 connects     still running...
+    spawn Thread2        still running...      START
+    accept() -> wait     still running...      handle client2...
+                        client1 disconnects
+                        END                    still running...
+                                                still running...
+                                                client2 disconnects
+                                                END
+     * 
+     * 
+     * 
      */
     public void serve() throws IOException {
         while (true) {
             // block until a client connects
             Socket socket = serverSocket.accept();
 
-            // handle the client
-            try {
-                handleConnection(socket);
-            } catch (IOException ioe) {
-                ioe.printStackTrace(); // but don't terminate serve()
-            } finally {
-                socket.close();
-            }
+            //create a new thread for each client
+            new Thread(() -> {
+                // handle the client
+                try {
+                    try {
+                        handleConnection(socket);
+                    } finally {
+                        socket.close();
+                    }
+                    //handle the exception outside
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+
+                //after starting a thread, immediately goes to next loop
+            }).start();
+
         }
     }
 
@@ -73,18 +113,29 @@ public class MinesweeperServer {
      * @throws IOException if the connection encounters an error or terminates unexpectedly
      */
     private void handleConnection(Socket socket) throws IOException {
+        // Create a reader to receive input from the client
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        // Create a writer to send output to the client
+        // The 'true' parameter enables auto-flushing - output is sent immediately
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
         try {
+            // Start a loop that continues as long as we receive input
+            // first time store in.readLine()
+            // terminate when line is null
+            // read the next line. will be null when client disconnects
             for (String line = in.readLine(); line != null; line = in.readLine()) {
+                //process and get the output message
                 String output = handleRequest(line);
                 if (output != null) {
                     // TODO: Consider improving spec of handleRequest to avoid use of null
+                    // Send the response back to the client
                     out.println(output);
                 }
             }
         } finally {
+            // When the connection ends (either normally or due to an error),
+            // make sure to close both the input and output streams
             out.close();
             in.close();
         }
@@ -98,8 +149,8 @@ public class MinesweeperServer {
      */
     private String handleRequest(String input) {
         String regex = "(look)|(help)|(bye)|"
-                     + "(dig -?\\d+ -?\\d+)|(flag -?\\d+ -?\\d+)|(deflag -?\\d+ -?\\d+)";
-        if ( ! input.matches(regex)) {
+                + "(dig -?\\d+ -?\\d+)|(flag -?\\d+ -?\\d+)|(deflag -?\\d+ -?\\d+)";
+        if (!input.matches(regex)) {
             // invalid input
             // TODO Problem 5
         }
@@ -185,7 +236,7 @@ public class MinesweeperServer {
 
         Queue<String> arguments = new LinkedList<String>(Arrays.asList(args));
         try {
-            while ( ! arguments.isEmpty()) {
+            while (!arguments.isEmpty()) {
                 String flag = arguments.remove();
                 try {
                     if (flag.equals("--debug")) {
@@ -206,7 +257,7 @@ public class MinesweeperServer {
                         sizeX = -1;
                         sizeY = -1;
                         file = Optional.of(new File(arguments.remove()));
-                        if ( ! file.get().isFile()) {
+                        if (!file.get().isFile()) {
                             throw new IllegalArgumentException("file not found: \"" + file.get() + "\"");
                         }
                     } else {
@@ -220,7 +271,8 @@ public class MinesweeperServer {
             }
         } catch (IllegalArgumentException iae) {
             System.err.println(iae.getMessage());
-            System.err.println("usage: MinesweeperServer [--debug | --no-debug] [--port PORT] [--size SIZE_X,SIZE_Y | --file FILE]");
+            System.err.println(
+                    "usage: MinesweeperServer [--debug | --no-debug] [--port PORT] [--size SIZE_X,SIZE_Y | --file FILE]");
             return;
         }
 
@@ -245,10 +297,11 @@ public class MinesweeperServer {
      * @param port The network port on which the server should listen, requires 0 <= port <= 65535.
      * @throws IOException if a network error occurs
      */
-    public static void runMinesweeperServer(boolean debug, Optional<File> file, int sizeX, int sizeY, int port) throws IOException {
-        
+    public static void runMinesweeperServer(boolean debug, Optional<File> file, int sizeX, int sizeY, int port)
+            throws IOException {
+
         // TODO: Continue implementation here in problem 4
-        
+
         MinesweeperServer server = new MinesweeperServer(port, debug);
         server.serve();
     }
