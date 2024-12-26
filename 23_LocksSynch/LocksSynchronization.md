@@ -196,7 +196,7 @@ Drawbacks:
 - First, it’s not modular — the code has to know about all the locks in the system
 - Second, it may be difficult or impossible for the code to know exactly which of those locks it will need before it even acquires the first one
 
-### Deadclock Solution 2: Coarse-grained locking
+### Deadlock Solution 2: Coarse-grained locking
 
 Just use a single lock to guard many object instances, or even the whole subsystem.
 

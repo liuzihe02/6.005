@@ -1,6 +1,8 @@
 # 6.005
 Course notes and assignments fro MIT 6.005 Software Construction (Spring 2016). We take markdown notes in the numbered folders and do our problem set assignments in `ps0`,`ps1` etc.
 
+Accessible via MIT's OCW [page](ttps://ocw.mit.edu/ans7870/6/6.005/s16/)
+
 ## Notes
 
 - We use `JUnit` to write our test files, with VSCode. We need to enable Java tests which automatically creates and configures the `/lib` folder and `.jar` files for us.
