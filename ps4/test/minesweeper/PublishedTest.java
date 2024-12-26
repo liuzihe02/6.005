@@ -1,7 +1,7 @@
 /* Copyright (c) 2007-2016 MIT 6.005 course staff, all rights reserved.
  * Redistribution of original or derived work requires permission of course staff.
  */
-package minesweeper.server;
+package minesweeper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,20 +19,20 @@ import java.util.Random;
 
 import org.junit.Test;
 
-
+import minesweeper.server.MinesweeperServer;
 
 /**
  * Tests basic LOOK and DIG commands and X,Y directions.
  */
 public class PublishedTest {
-    
+
     private static final String LOCALHOST = "127.0.0.1";
     private static final int PORT = 4000 + new Random().nextInt(1 << 15);
-    
+
     private static final int MAX_CONNECTION_ATTEMPTS = 10;
-    
-    private static final String BOARDS_PKG = "autograder/boards/";
-    
+
+    private static final String BOARDS_PKG = "minesweeper/boards/";
+
     /**
      * Start a MinesweeperServer in debug mode with a board file from BOARDS_PKG.
      * @param boardFile board to load
@@ -59,7 +59,7 @@ public class PublishedTest {
         serverThread.start();
         return serverThread;
     }
-    
+
     /**
      * Connect to a MinesweeperServer and return the connected socket.
      * @param server abort connection attempts if the server thread dies
@@ -74,24 +74,27 @@ public class PublishedTest {
                 socket.setSoTimeout(3000);
                 return socket;
             } catch (ConnectException ce) {
-                if ( ! server.isAlive()) {
+                if (!server.isAlive()) {
                     throw new IOException("Server thread not running");
                 }
                 if (++attempts > MAX_CONNECTION_ATTEMPTS) {
                     throw new IOException("Exceeded max connection attempts", ce);
                 }
-                try { Thread.sleep(attempts * 10); } catch (InterruptedException ie) { }
+                try {
+                    Thread.sleep(attempts * 10);
+                } catch (InterruptedException ie) {
+                }
             }
         }
     }
-    
+
     @Test(timeout = 10000)
     public void publishedTest() throws IOException {
 
         Thread thread = startMinesweeperServer("board_file_5");
 
         Socket socket = connectToMinesweeperServer(thread);
-        
+
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 

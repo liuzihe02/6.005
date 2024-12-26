@@ -7,7 +7,7 @@ package minesweeper.server;
  * TODO
  */
 public class MinesweeperServerTest {
-    
+
     // TODO
-    
+
 }
