@@ -10,6 +10,9 @@ import java.util.Arrays;
  * so we dynamically calcualte integers and board state; instead of keep a history
  * prevents concurrency and update issues
  * 
+ * Thread-safety argument:
+ * All state-modifying functions are using the private lock!
+ * 
  *   
 */
 
@@ -30,8 +33,15 @@ public class Board {
     private final int width;
     private final int height;
 
+    //use a single private lock when doing actions
+    // note that we dont make this a static variable
+    // if this is static, then all instances of Board will share the same lock!
+    // we want to allow for multiple boards, so we use a single instance-specific lock
+    private final Object lock = new Object();
+
     /**
     * Creates a new Minesweeper board with specified dimensions and mine locations.
+    * constructor doesnt need a lock
     * 
     * @param width Board width (number of columns)
     * @param height Board height (number of rows) 
@@ -94,80 +104,89 @@ public class Board {
     * @return true if a bomb was hit, false otherwise
     */
     public boolean dig(int x, int y) {
-        // Can't dig if already dug or flagged, or if out of bounds
-        // must be untouched
-        if (!isValid(x, y)) {
-            return false;
-        }
-        // cant dig if already dug or flagged, must be untouched
-        if ((status[x][y] == 0) || (status[x][y] == 1)) {
-            return false;
-        }
+        //modifies the state, so we lock this method
+        synchronized (lock) {
+            // Can't dig if already dug or flagged, or if out of bounds
+            // must be untouched
+            if (!isValid(x, y)) {
+                return false;
+            }
+            // cant dig if already dug or flagged, must be untouched
+            if ((status[x][y] == 0) || (status[x][y] == 1)) {
+                return false;
+            }
 
-        //make it dug
-        status[x][y] = 1;
+            //make it dug
+            status[x][y] = 1;
 
-        //check if bomb
+            //check if bomb
 
-        //bomb
-        if (hasMine[x][y]) {
-            //change to no bomb
-            hasMine[x][y] = false;
-            //TODO: if debug flag is missing, then terminate user's connection. take care of this in minesweeperServer
-            return true;
-        }
-        //no bomb
-        else {
-            //if adjacent all blank, trigger recursive blank digging
-            // If no bomb and no adjacent mines, dig neighbors
-            if (countMines(x, y) == 0) {
-                for (int dx = -1; dx <= 1; dx++) {
-                    for (int dy = -1; dy <= 1; dy++) {
-                        int newX = x + dx;
-                        int newY = y + dy;
-                        //skip self (cannot be both zero) and new box must be valid
-                        if ((dx != 0 || dy != 0) && isValid(newX, newY)) {
-                            //dig only the untouched squares
-                            if (status[newX][newY] == 2) {
-                                dig(newX, newY);
+            //bomb
+            if (hasMine[x][y]) {
+                //change to no bomb
+                hasMine[x][y] = false;
+                //TODO: if debug flag is missing, then terminate user's connection. take care of this in minesweeperServer
+                return true;
+            }
+            //no bomb
+            else {
+                //if adjacent all blank, trigger recursive blank digging
+                // If no bomb and no adjacent mines, dig neighbors
+                if (countMines(x, y) == 0) {
+                    for (int dx = -1; dx <= 1; dx++) {
+                        for (int dy = -1; dy <= 1; dy++) {
+                            int newX = x + dx;
+                            int newY = y + dy;
+                            //skip self (cannot be both zero) and new box must be valid
+                            if ((dx != 0 || dy != 0) && isValid(newX, newY)) {
+                                //dig only the untouched squares
+                                if (status[newX][newY] == 2) {
+                                    dig(newX, newY);
+                                }
                             }
                         }
                     }
                 }
+                //return false just for this blank
+                return false;
             }
-            //return false just for this blank
-            return false;
         }
     }
 
     // Flag a square
     // returns true if successfully flagged
+    // synchronized method
     public boolean flag(int x, int y) {
-        //if in bound, and is untouched
-        if (isValid(x, y) && status[x][y] == 2) {
-            //change to flag
-            status[x][y] = 0;
-            return true;
-        }
-        //not in bounds or unable to flag
-        else {
-            return false;
+        synchronized (lock) {
+            //if in bound, and is untouched
+            if (isValid(x, y) && status[x][y] == 2) {
+                //change to flag
+                status[x][y] = 0;
+                return true;
+            }
+            //not in bounds or unable to flag
+            else {
+                return false;
+            }
         }
     }
 
     // deflag a square
     // returns true if successfully deflagged
+    // synchronized method
     public boolean deflag(int x, int y) {
-        //if in bound, and is flagged
-        if (isValid(x, y) && status[x][y] == 0) {
-            //change to untouched
-            status[x][y] = 2;
-            return true;
+        synchronized (lock) {
+            //if in bound, and is flagged
+            if (isValid(x, y) && status[x][y] == 0) {
+                //change to untouched
+                status[x][y] = 2;
+                return true;
 
-        }
-        //not in bounds or unable to flag
-        else {
-            return false;
+            }
+            //not in bounds or unable to flag
+            else {
+                return false;
+            }
         }
     }
 

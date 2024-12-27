@@ -29,6 +29,17 @@ public class MinesweeperServer {
     /** True if the server should *not* disconnect a client after a BOOM message. */
     private final boolean debug;
 
+    //this is a static board field - currently only a single board available for all servers
+    // in the future, may include support for multiple boards available
+
+    // cannot be final here because we may want to reassign the board later
+    // good for mutable shared state
+    // VERY IMPORTANT: CURRENTLY BOARD IS A STATIC VARIABLE
+    // we only allow one board and one game session at any time here
+    private static Board board;
+    /** Number of players currectly connected. */
+    private static int players;
+
     // Abstraction function:
     //   static variables and methods represent a minesweeper server with a board
     //   instance variables and methods represent a thread serving a client user
@@ -55,6 +66,8 @@ public class MinesweeperServer {
     /**
      * Run the server, listening for client connections and handling them.
      * Never returns unless an exception is thrown.
+     * 
+     * Game continues endlessly! There is no win condition
      * 
      * @throws IOException if the main server socket is broken
      *                     (IOExceptions from individual clients do *not* terminate serve())
@@ -183,6 +196,65 @@ public class MinesweeperServer {
     }
 
     /**
+    * Creates a random board with given dimensions.
+    */
+    private static Board createRandomBoard(int sizeX, int sizeY) {
+        // we use ArrayList instead of int[][] so we allow it to grow dynamically
+        List<int[]> mines = new ArrayList<>();
+        Random random = new Random();
+
+        // For each square, 25% chance of being a mine
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                if (random.nextDouble() < 0.25) {
+                    mines.add(new int[] { x, y });
+                }
+            }
+        }
+        //convert to regular array
+        // new int[0][] is the type we want to convert to
+        // Java will actually ignore the zero and convert to correct size
+        // this is equivalent to int[mines.size()][]
+        return new Board(sizeX, sizeY, mines.toArray(new int[0][]));
+    }
+
+    /**
+    * Loads a board from a file.
+    */
+    private static Board loadBoardFromFile(File file) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            // Read board dimensions
+
+            //read the first line
+            String[] dimensions = reader.readLine().split(" ");
+            //x-coord
+            int width = Integer.parseInt(dimensions[0]);
+            //y-coord
+            int height = Integer.parseInt(dimensions[1]);
+
+            List<int[]> mines = new ArrayList<>();
+
+            // Read each line and find mines
+
+            // for each row
+            for (int y = 0; y < height; y++) {
+                String[] values = reader.readLine().split(" ");
+                // for each elem along the wrong
+                for (int x = 0; x < width; x++) {
+                    if (values[x].equals("1")) {
+                        mines.add(new int[] { x, y });
+                    }
+                }
+            }
+
+            //convert to regular array
+            return new Board(width, height, mines.toArray(new int[0][]));
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid board file format", e);
+        }
+    }
+
+    /**
      * Start a MinesweeperServer using the given arguments.
      * 
      * <br> Usage:
@@ -230,6 +302,7 @@ public class MinesweeperServer {
         // Command-line argument parsing is provided. Do not change this method.
         boolean debug = false;
         int port = DEFAULT_PORT;
+        //sizeX and sizeY are already initialized to default size!
         int sizeX = DEFAULT_SIZE;
         int sizeY = DEFAULT_SIZE;
         Optional<File> file = Optional.empty();
@@ -300,8 +373,18 @@ public class MinesweeperServer {
     public static void runMinesweeperServer(boolean debug, Optional<File> file, int sizeX, int sizeY, int port)
             throws IOException {
 
-        // TODO: Continue implementation here in problem 4
+        // NOTE: at this point, the static variable board is declared (so its assigned to a default value which in Java it is null here)
 
+        // assign the static variable board to an actual board
+        if (file.isPresent()) {
+            // Load board from file
+            MinesweeperServer.board = loadBoardFromFile(file.get());
+        } else {
+            // Use default 10x10 if size not specified
+            MinesweeperServer.board = createRandomBoard(sizeX, sizeY);
+        }
+
+        //this is the constructor method for this object
         MinesweeperServer server = new MinesweeperServer(port, debug);
         server.serve();
     }
