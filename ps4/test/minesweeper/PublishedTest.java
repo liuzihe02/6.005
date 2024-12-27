@@ -41,7 +41,7 @@ public class PublishedTest {
      * @return thread running the server
      * @throws IOException if the board file cannot be found
      */
-    private static Thread startMinesweeperServer(String boardFile) throws IOException {
+    public static Thread startMinesweeperServer(String boardFile) throws IOException {
         final URL boardURL = ClassLoader.getSystemClassLoader().getResource(BOARDS_PKG + boardFile);
         if (boardURL == null) {
             throw new IOException("Failed to locate resource " + boardFile);
@@ -52,6 +52,8 @@ public class PublishedTest {
         } catch (URISyntaxException urise) {
             throw new IOException("Invalid URL " + boardURL, urise);
         }
+
+        //we decide the args here!
         final String[] args = new String[] {
                 "--debug", // in debug mode
                 "--port", Integer.toString(PORT), //uses the PORT defined at the start
@@ -63,19 +65,21 @@ public class PublishedTest {
     }
 
     /**
-     * Connect to a MinesweeperServer and return the connected socket.
+     * Create and client socket; Connect to a MinesweeperServer and return the connected socket.
+     * 
+     * 
      * @param server abort connection attempts if the server thread dies. takes in the server thread
      * @return client socket connected to the serverSocket
      * @throws IOException if the connection fails
      */
-    private static Socket connectToMinesweeperServer(Thread server) throws IOException {
+    public static Socket connectToMinesweeperServer(Thread server) throws IOException {
         int attempts = 0;
         while (true) {
             try {
                 // the port will start a SINGLE new client thread
-                Socket socket = new Socket(LOCALHOST, PORT);
-                socket.setSoTimeout(3000);
-                return socket;
+                Socket clientSocket = new Socket(LOCALHOST, PORT);
+                clientSocket.setSoTimeout(3000);
+                return clientSocket;
             } catch (ConnectException ce) {
                 //check if the server thread is fine
                 if (!server.isAlive()) {
@@ -99,11 +103,13 @@ public class PublishedTest {
         Thread thread = startMinesweeperServer("board_file_5");
 
         //client socket, using a random port
-        Socket socket = connectToMinesweeperServer(thread);
+        Socket clientSocket = connectToMinesweeperServer(thread);
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        //receive stuff in from the server
+        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         //autoflush is true; everytime you use println buffer is always flushed
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        // send stuff from the client out to the server
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
         assertTrue("expected HELLO message", in.readLine().startsWith("Welcome"));
 
@@ -130,12 +136,6 @@ public class PublishedTest {
         assertEquals("BOOM!", in.readLine());
 
         out.println("look"); // debug mode is on
-        // String a = in.readLine();
-        // String b = in.readLine();
-        // String c = in.readLine();
-        // String d = in.readLine();
-        // String e = in.readLine();
-        // String f = in.readLine();
         assertEquals("             ", in.readLine());
         assertEquals("             ", in.readLine());
         assertEquals("             ", in.readLine());
@@ -145,6 +145,6 @@ public class PublishedTest {
         assertEquals("- 1          ", in.readLine());
 
         out.println("bye");
-        socket.close();
+        clientSocket.close();
     }
 }

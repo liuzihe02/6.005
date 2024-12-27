@@ -102,16 +102,27 @@ public class MinesweeperServer {
     public void serve() throws IOException {
         while (true) {
             // block until a client connects
-            Socket socket = serverSocket.accept();
+            /*
+             * For a complete socket conneciton, we have THREE sockets
+             * The Server Socket (or Listener Socket) - The ServerSocket that listens for connections
+            The Accept Socket (or Server-side Connection Socket) - The Socket created by accept()
+            The Client Socket (or Client-side Connection Socket) - The Socket created by the client
+            
+            so the below code accepts multiple new clients, creates multiple acceptSocket
+             * 
+             */
+            Socket acceptSocket = serverSocket.accept();
 
             //create a new thread for each client
             new Thread(() -> {
                 // handle the client
                 try {
                     try {
-                        handleConnection(socket);
-                    } finally {
-                        socket.close();
+                        handleConnection(acceptSocket);
+                    }
+                    // if anything wrong, close related accepted server socket
+                    finally {
+                        acceptSocket.close();
                     }
                     //handle the exception outside
                 } catch (IOException ioe) {
@@ -127,15 +138,15 @@ public class MinesweeperServer {
     /**
      * Handle a single client connection. Returns when client disconnects.
      * 
-     * @param socket socket where the client is connected
+     * @param acceptSocket socket where the client is connected
      * @throws IOException if the connection encounters an error or terminates unexpectedly
      */
-    private void handleConnection(Socket socket) throws IOException {
+    private void handleConnection(Socket acceptSocket) throws IOException {
         // Create a reader to receive input from the client
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(acceptSocket.getInputStream()));
         // Create a writer to send output to the client
         // The 'true' parameter enables auto-flushing - output is sent immediately
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        PrintWriter out = new PrintWriter(acceptSocket.getOutputStream(), true);
 
         try {
             // Send HELLO message immediately upon connection
@@ -153,7 +164,6 @@ public class MinesweeperServer {
                 //process and get the output message
                 String output = handleRequest(line);
                 if (output != null) {
-                    // TODO: Consider improving spec of handleRequest to avoid use of null
                     // Send the response back to the client
                     out.println(output);
 
@@ -170,9 +180,8 @@ public class MinesweeperServer {
             }
         } finally {
             // When the connection ends (either normally or due to an error),
-            // make sure to close both the input and output streams
-            out.close();
-            in.close();
+            // closing the socket is equivalent to closing the input and output streams!
+            acceptSocket.close();
         }
     }
 
