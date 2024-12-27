@@ -119,37 +119,35 @@ public class Board {
             //make it dug
             status[x][y] = 1;
 
-            //check if bomb
-
+            //check if bomb and store the result
+            boolean hitBomb = false;
             //bomb
             if (hasMine[x][y]) {
                 //change to no bomb
                 hasMine[x][y] = false;
                 //TODO: if debug flag is missing, then terminate user's connection. take care of this in minesweeperServer
-                return true;
+                hitBomb = true;
             }
-            //no bomb
-            else {
-                //if adjacent all blank, trigger recursive blank digging
-                // If no bomb and no adjacent mines, dig neighbors
-                if (countMines(x, y) == 0) {
-                    for (int dx = -1; dx <= 1; dx++) {
-                        for (int dy = -1; dy <= 1; dy++) {
-                            int newX = x + dx;
-                            int newY = y + dy;
-                            //skip self (cannot be both zero) and new box must be valid
-                            if ((dx != 0 || dy != 0) && isValid(newX, newY)) {
-                                //dig only the untouched squares
-                                if (status[newX][newY] == 2) {
-                                    dig(newX, newY);
-                                }
+
+            //if adjacent all blank, trigger recursive blank digging
+            // we check for recursive digging regardless of whether theres a bomb or not
+            if (countMines(x, y) == 0) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        int newX = x + dx;
+                        int newY = y + dy;
+                        //skip self (cannot be both zero) and new box must be valid
+                        if ((dx != 0 || dy != 0) && isValid(newX, newY)) {
+                            //dig only the untouched squares
+                            if (status[newX][newY] == 2) {
+                                dig(newX, newY);
                             }
                         }
+
                     }
                 }
-                //return false just for this blank
-                return false;
             }
+            return hitBomb;
         }
     }
 

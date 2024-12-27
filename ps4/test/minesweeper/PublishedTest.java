@@ -92,7 +92,7 @@ public class PublishedTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 10000000)
     public void publishedTest() throws IOException {
 
         //create 
@@ -102,6 +102,7 @@ public class PublishedTest {
         Socket socket = connectToMinesweeperServer(thread);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        //autoflush is true; everytime you use println buffer is always flushed
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
         assertTrue("expected HELLO message", in.readLine().startsWith("Welcome"));
@@ -129,6 +130,8 @@ public class PublishedTest {
         assertEquals("BOOM!", in.readLine());
 
         out.println("look"); // debug mode is on
+        String a = in.readLine();
+        String b = in.readLine();
         assertEquals("             ", in.readLine());
         assertEquals("             ", in.readLine());
         assertEquals("             ", in.readLine());

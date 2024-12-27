@@ -141,7 +141,7 @@ public class MinesweeperServer {
             // Send HELLO message immediately upon connection
             updatePlayers(1);
             String helloMsg = String.format(
-                    "Welcome to Minesweeper. Board: %d columns by %d rows. Players: %d including you. Type 'help' for help.\n",
+                    "Welcome to Minesweeper. Board: %d columns by %d rows. Players: %d including you. Type 'help' for help.",
                     board.width, board.height, players);
             out.println(helloMsg);
 
@@ -200,7 +200,7 @@ public class MinesweeperServer {
                 boolean hitBomb = board.dig(x, y);
                 //bomb went off
                 if (hitBomb) {
-                    return "BOOM!\n";
+                    return "BOOM!";
                 }
                 //no bomb
                 return board.toString();

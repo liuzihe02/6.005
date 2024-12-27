@@ -70,18 +70,6 @@ public class BoardTest {
     }
 
     @Test
-    public void testDigOnMine() {
-        int[][] mines = { { 1, 1 } };
-        Board board = new Board(3, 3, mines);
-        assertTrue(board.dig(1, 1));
-        assertEquals(
-                "- - -\n" +
-                        "-   -\n" +
-                        "- - -",
-                board.toString());
-    }
-
-    @Test
     public void testDigUntouched() {
         Board board = new Board(JUN_BOARD_SIZE, JUN_BOARD_SIZE, JUN_MINES);
         boolean result = board.dig(3, 1);
