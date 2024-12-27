@@ -56,9 +56,11 @@ public class PublishedTest {
         //we decide the args here!
         final String[] args = new String[] {
                 "--debug", // in debug mode
-                "--port", Integer.toString(PORT), //uses the PORT defined at the start
+                "--port", Integer.toString(PORT), //uses the random PORT defined at the start, NOT the default port!
                 "--file", boardPath
         };
+
+        //the random port is passed in as an arg
         Thread serverThread = new Thread(() -> MinesweeperServer.main(args));
         serverThread.start();
         return serverThread;
