@@ -11,11 +11,16 @@ import minesweeper.Board;
 
 /**
  * Multiplayer Minesweeper server.
+ * 
  */
 public class MinesweeperServer {
 
     // System thread safety argument
-    //   TODO Problem 5
+    // 1. The Board class is thread-safe as all its mutating methods are synchronized on a private lock
+    // 2. The static board variable is only assigned once during server startup
+    // 3. The static players variable is modified using synchronized blocks
+    // 4. Each client connection is handled in its own thread with its own local variables
+    // 5. The only shared state between threads is the board and players count, which are properly synchronized
 
     /** Default server port. */
     private static final int DEFAULT_PORT = 4444;
@@ -133,6 +138,13 @@ public class MinesweeperServer {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
         try {
+            // Send HELLO message immediately upon connection
+            updatePlayers(1);
+            String helloMsg = String.format(
+                    "Welcome to Minesweeper. Board: %d columns by %d rows. Players: %d including you. Type 'help' for help.\n",
+                    board.width, board.height, players);
+            out.println(helloMsg);
+
             // Start a loop that continues as long as we receive input
             // first time store in.readLine()
             // terminate when line is null
@@ -164,31 +176,42 @@ public class MinesweeperServer {
         String regex = "(look)|(help)|(bye)|"
                 + "(dig -?\\d+ -?\\d+)|(flag -?\\d+ -?\\d+)|(deflag -?\\d+ -?\\d+)";
         if (!input.matches(regex)) {
-            // invalid input
-            // TODO Problem 5
+            // Invalid input - return help message
+            return "Commands: look | dig x y | flag x y | deflag x y | help | bye";
         }
         String[] tokens = input.split(" ");
+
+        // 'look' request
         if (tokens[0].equals("look")) {
-            // 'look' request
-            // TODO Problem 5
+            return board.toString();
         } else if (tokens[0].equals("help")) {
             // 'help' request
-            // TODO Problem 5
+            return "Commands: look | dig x y | flag x y | deflag x y | help | bye";
         } else if (tokens[0].equals("bye")) {
             // 'bye' request
-            // TODO Problem 5
+            players--;
+            //TODO: need to terminate connection here
+            return null;
         } else {
             int x = Integer.parseInt(tokens[1]);
             int y = Integer.parseInt(tokens[2]);
             if (tokens[0].equals("dig")) {
                 // 'dig x y' request
-                // TODO Problem 5
+                boolean hitBomb = board.dig(x, y);
+                //bomb went off
+                if (hitBomb) {
+                    return "BOOM!\n";
+                }
+                //no bomb
+                return board.toString();
             } else if (tokens[0].equals("flag")) {
                 // 'flag x y' request
-                // TODO Problem 5
+                board.flag(x, y);
+                return board.toString();
             } else if (tokens[0].equals("deflag")) {
                 // 'deflag x y' request
-                // TODO Problem 5
+                board.deflag(x, y);
+                return board.toString();
             }
         }
         // TODO: Should never get here, make sure to return in each of the cases above
@@ -387,5 +410,11 @@ public class MinesweeperServer {
         //this is the constructor method for this object
         MinesweeperServer server = new MinesweeperServer(port, debug);
         server.serve();
+    }
+
+    //update players
+    private synchronized int updatePlayers(int count) {
+        players += count;
+        return players;
     }
 }

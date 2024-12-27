@@ -30,8 +30,8 @@ public class Board {
 
     //exclusive range of width, zero indexed
     //actual index goes from 0 to width-1
-    private final int width;
-    private final int height;
+    public final int width;
+    public final int height;
 
     //use a single private lock when doing actions
     // note that we dont make this a static variable
