@@ -27,7 +27,7 @@ public class MinesweeperServer {
     /** Maximum port number as defined by ServerSocket. */
     private static final int MAXIMUM_PORT = 65535;
     /** Default square board size. */
-    private static final int DEFAULT_SIZE = 10;
+    private static final int DEFAULT_SIZE = 5;
 
     /** Socket for receiving incoming connections. */
     private final ServerSocket serverSocket;
@@ -156,6 +156,16 @@ public class MinesweeperServer {
                     // TODO: Consider improving spec of handleRequest to avoid use of null
                     // Send the response back to the client
                     out.println(output);
+
+                    //check if player wants to leave
+                    if (output.endsWith("Goodbye!")) { // Check for disconnect signal
+                        break; // Exit loop and close connection
+                    }
+
+                    // if not in debug mode and boom then must close connection'
+                    if (output.endsWith("BOOM!") && !debug) { // Check for disconnect signal
+                        break; // Exit loop and close connection
+                    }
                 }
             }
         } finally {
@@ -189,9 +199,9 @@ public class MinesweeperServer {
             return "Commands: look | dig x y | flag x y | deflag x y | help | bye";
         } else if (tokens[0].equals("bye")) {
             // 'bye' request
-            players--;
+            updatePlayers(-1);
             //TODO: need to terminate connection here
-            return null;
+            return "You chose to leave the game. Goodbye!";
         } else {
             int x = Integer.parseInt(tokens[1]);
             int y = Integer.parseInt(tokens[2]);

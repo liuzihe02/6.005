@@ -130,8 +130,12 @@ public class PublishedTest {
         assertEquals("BOOM!", in.readLine());
 
         out.println("look"); // debug mode is on
-        String a = in.readLine();
-        String b = in.readLine();
+        // String a = in.readLine();
+        // String b = in.readLine();
+        // String c = in.readLine();
+        // String d = in.readLine();
+        // String e = in.readLine();
+        // String f = in.readLine();
         assertEquals("             ", in.readLine());
         assertEquals("             ", in.readLine());
         assertEquals("             ", in.readLine());
