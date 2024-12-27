@@ -3,6 +3,16 @@
  */
 package minesweeper;
 
+import java.util.Arrays;
+
+/**
+ * note that we only ever keep track of status and where bombs are
+ * so we dynamically calcualte integers and board state; instead of keep a history
+ * prevents concurrency and update issues
+ * 
+ *   
+*/
+
 public class Board {
 
     // Three arrays to track the state of each square
@@ -11,22 +21,35 @@ public class Board {
     private final boolean[][] hasMine;
     //Each square is either flagged , dug , or untouched
 
-    // NOTE: 0 is flagged, 1 is dug, 3 is untouched
+    // NOTE: 0 is flagged, 1 is dug, 2 is untouched
 
     private final int[][] status; // true if square has been flagged
 
-    //inclusive range of width, zero indexed
+    //exclusive range of width, zero indexed
+    //actual index goes from 0 to width-1
     private final int width;
     private final int height;
 
-    // Create new board
-    // takes in where the mines are
+    /**
+    * Creates a new Minesweeper board with specified dimensions and mine locations.
+    * 
+    * @param width Board width (number of columns)
+    * @param height Board height (number of rows) 
+    * @param mines Array of [x,y] coordinates where mines are located
+    * @throws IndexOutOfBoundsException if mine coordinates are invalid
+    */
     public Board(int width, int height, int[][] mines) {
         this.width = width;
         this.height = height;
 
+        //NOTE: first index is the outer dimension, last index is the inner dimension
+        // so this creates [width] number of 1D array (columns), and each column has [height] number of elements
         hasMine = new boolean[width][height];
         status = new int[width][height];
+        //default is to fill all with untouched
+        // note that Arrays fill only work for 1D array
+        // we use stream for this
+        Arrays.stream(status).forEach(row -> Arrays.fill(row, 2));
 
         // Place mines
         for (int[] mine : mines) {
@@ -46,26 +69,41 @@ public class Board {
             for (int dy = -1; dy <= 1; dy++) {
                 int newX = x + dx;
                 int newY = y + dy;
-                //increment the count if there exists a bomb
-                if (hasMine[newX][newY]) {
-                    count++;
+                //skip self, and new coords must also be valid
+                //be careful of brackets here
+                if ((dx != 0 || dy != 0) && isValid(newX, newY)) {
+                    //increment the count if there exists a bomb
+                    if (hasMine[newX][newY]) {
+                        count++;
+                    }
                 }
             }
         }
         return count;
     }
 
-    // Dig a square
-    //if a bomb goes off - this becomes a dug square, but doesnt trigger the blank-square-recursive digging
-    //make sure to update the surrounding squares
-
-    //if theres no bomb, and all adjacent are no bomb, then trigger recursive digging
-    // returns whether A BOMB HAS EXPLODED
+    /**
+    * Attempts to dig at specified coordinates.
+    * If square is untouched and contains:
+    * - A mine: Removes mine and returns true; do not do recursive digging
+    * - No mine and no adjacent mines: Recursively digs adjacent untouched squares
+    * - No mine but has adjacent mines: Only digs this square
+    * 
+    * @param x X-coordinate to dig (horizontal)
+    * @param y Y-coordinate to dig (vertical)
+    * @return true if a bomb was hit, false otherwise
+    */
     public boolean dig(int x, int y) {
         // Can't dig if already dug or flagged, or if out of bounds
-        if ((status[x][y] == 0) || (status[x][y] == 1) || (x < 0 || x > width || y < 0 || y > height)) {
+        // must be untouched
+        if (!isValid(x, y)) {
             return false;
         }
+        // cant dig if already dug or flagged, must be untouched
+        if ((status[x][y] == 0) || (status[x][y] == 1)) {
+            return false;
+        }
+
         //make it dug
         status[x][y] = 1;
 
@@ -81,63 +119,110 @@ public class Board {
         //no bomb
         else {
             //if adjacent all blank, trigger recursive blank digging
-            // If empty square and no adjacent mines, dig neighbors
+            // If no bomb and no adjacent mines, dig neighbors
             if (countMines(x, y) == 0) {
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         int newX = x + dx;
                         int newY = y + dy;
-                        //skip self and dig only the untouched squares
-                        if ((dx != 0 && dy != 0) && status[newX][newY] == 2) {
-                            dig(newX, newY);
+                        //skip self (cannot be both zero) and new box must be valid
+                        if ((dx != 0 || dy != 0) && isValid(newX, newY)) {
+                            //dig only the untouched squares
+                            if (status[newX][newY] == 2) {
+                                dig(newX, newY);
+                            }
                         }
                     }
                 }
             }
+            //return false just for this blank
             return false;
         }
     }
 
-//     // Flag a square
-//     public boolean flag(int x, int y) {
-//         if (isRevealed[x][y])
-//             return false;
-//         isFlagged[x][y] = true;
-//         return true;
-//     }
+    // Flag a square
+    // returns true if successfully flagged
+    public boolean flag(int x, int y) {
+        //if in bound, and is untouched
+        if (isValid(x, y) && status[x][y] == 2) {
+            //change to flag
+            status[x][y] = 0;
+            return true;
+        }
+        //not in bounds or unable to flag
+        else {
+            return false;
+        }
+    }
 
-//     // Remove flag from a square
-//     public boolean deflag(int x, int y) {
-//         if (!isFlagged[x][y])
-//             return false;
-//         isFlagged[x][y] = false;
-//         return true;
-//     }
+    // deflag a square
+    // returns true if successfully deflagged
+    public boolean deflag(int x, int y) {
+        //if in bound, and is flagged
+        if (isValid(x, y) && status[x][y] == 0) {
+            //change to untouched
+            status[x][y] = 2;
+            return true;
 
-//     // Convert board to string for display
-//     @Override
-//     public String toString() {
-//         StringBuilder board = new StringBuilder();
+        }
+        //not in bounds or unable to flag
+        else {
+            return false;
+        }
+    }
 
-//         for (int y = 0; y < height; y++) {
-//             for (int x = 0; x < width; x++) {
-//                 if (isFlagged[x][y]) {
-//                     board.append("F");
-//                 } else if (!isRevealed[x][y]) {
-//                     board.append("-");
-//                 } else if (hasMine[x][y]) {
-//                     board.append("*");
-//                 } else {
-//                     int mines = countMines(x, y);
-//                     board.append(mines == 0 ? " " : mines);
-//                 }
-//                 if (x < width - 1)
-//                     board.append(" ");
-//             }
-//             if (y < height - 1)
-//                 board.append("\n");
-//         }
+    /*
+     * checks if a given square is in the board (within valid bounds)
+     */
+    private boolean isValid(int x, int y) {
+        return (x >= 0 && x < width && y >= 0 && y < height);
+    }
 
-//         return board.toString();
-//     }
-// }
+    // Convert board to string for display
+    @Override
+    public String toString() {
+        StringBuilder board = new StringBuilder();
+
+        //traverse vertically
+        for (int y = 0; y < height; y++) {
+            //build along one row, horizontally
+            for (int x = 0; x < width; x++) {
+                //flagged
+                if (status[x][y] == 0) {
+                    board.append("F");
+                }
+                //untouched
+                else if (status[x][y] == 2) {
+                    board.append("-");
+                }
+                // tried to dig before/blank recursive dig
+                else {
+                    //surrounding number of mines
+                    int mines = countMines(x, y);
+                    //dug before
+                    if (status[x][y] == 1) {
+                        //0 neighbour bombs
+                        if (mines == 0) {
+                            board.append(" ");
+                        }
+                        // some neighbour bombs
+                        else {
+                            board.append(Integer.toString(mines));
+                        }
+                    }
+                    //shouldnt go here
+                    else {
+                        System.out.println(
+                                "Debug: Unexpected status " + status[x][y] + " at position [" + x + "][" + y + "]");
+                    }
+                }
+                if (x < width - 1)
+                    board.append(" ");
+            }
+            if (y < height - 1)
+                board.append("\n");
+        }
+
+        return board.toString();
+    }
+}
