@@ -1,5 +1,5 @@
 # 6.005
-Course notes and assignments from MIT 6.005 Software Construction (Spring 2016). We take markdown notes in the numbered folders and do our problem set assignments in `ps0`,`ps1` etc.
+Course notes and assignments from MIT 6.005 Software Construction (Spring 2016). We take markdown notes in the numbered folders and do our problem set assignments in `ps0`,`ps1` etc. We also cover the intro Java tutorial in `02_BasicJava`
 
 Accessible via MIT's OCW [page](https://ocw.mit.edu/ans7870/6/6.005/s16/)
 
